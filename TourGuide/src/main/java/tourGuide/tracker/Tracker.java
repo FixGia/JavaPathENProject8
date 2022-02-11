@@ -9,18 +9,22 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
+import tourGuide.service.GpsService;
+import tourGuide.model.User;
+import tourGuide.service.UserService;
 
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-	private final TourGuideService tourGuideService;
+	private final GpsService gpsService;
+	private final UserService userService;
 	private boolean stop = false;
 
-	public Tracker(TourGuideService tourGuideService) {
-		this.tourGuideService = tourGuideService;
+	public Tracker(GpsService gpsService, UserService userService) {
+		this.gpsService = gpsService;
+
+		this.userService = userService;
 		
 		executorService.submit(this);
 	}
@@ -32,7 +36,8 @@ public class Tracker extends Thread {
 		stop = true;
 		executorService.shutdownNow();
 	}
-	
+
+
 	@Override
 	public void run() {
 		StopWatch stopWatch = new StopWatch();
@@ -42,10 +47,10 @@ public class Tracker extends Thread {
 				break;
 			}
 			
-			List<User> users = tourGuideService.getAllUsers();
+			List<User> users = userService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
-			users.forEach(u -> tourGuideService.trackUserLocation(u));
+			users.forEach(u -> gpsService.trackUserLocation(u));
 			stopWatch.stop();
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 			stopWatch.reset();

@@ -11,7 +11,8 @@ import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
+import tourGuide.model.User;
+import tourGuide.service.UserService;
 import tripPricer.Provider;
 
 @RestController
@@ -19,6 +20,8 @@ public class TourGuideController {
 
 	@Autowired
 	TourGuideService tourGuideService;
+	@Autowired
+    UserService userService;
 	
     @RequestMapping("/")
     public String index() {
@@ -71,10 +74,10 @@ public class TourGuideController {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
     	return JsonStream.serialize(providers);
     }
-    
+
+    @RequestMapping("/getUser")
     private User getUser(String userName) {
-    	return tourGuideService.getUser(userName);
+    	return userService.getUser(userName);
     }
-   
 
 }
