@@ -27,6 +27,11 @@ private final GpsMapper gpsMapper;
     }
 
 
+    /**
+     * Get the User's location
+     * @param userId the user id
+     * @return the user's location
+     */
     public VisitedLocationRequest getUserLocation(final UUID userId) {
 
         if (userId == null) {
@@ -39,6 +44,11 @@ private final GpsMapper gpsMapper;
         return gpsMapper.mapVisitedLocationToVisitedLocationRequest(visitedLocation) ;
     }
 
+    /**
+     * Get all Attractions
+     *
+     * @return a list of all attractions
+     */
     @Override
     public List<AttractionRequest> getAttractions() {
 
