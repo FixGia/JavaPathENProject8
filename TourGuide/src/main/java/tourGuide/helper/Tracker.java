@@ -1,11 +1,11 @@
-package tourGuide.tracker;
+package tourGuide.helper;
 
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.stereotype.Component;
 import tourGuide.model.User;
-import tourGuide.service.GpsService;
+import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
 import java.util.List;
@@ -20,11 +20,11 @@ public class Tracker extends Thread {
 
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-	private final GpsService gpsService;
+	private final LocationService gpsService;
 	private final UserService userService;
 	private boolean stop = false;
 
-	public Tracker(GpsService gpsService, UserService userService) {
+	public Tracker(LocationService gpsService, UserService userService) {
 		this.gpsService = gpsService;
 		this.userService = userService;
 	}

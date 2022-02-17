@@ -19,15 +19,9 @@ public interface UserService {
 
      List<User> getAllUsers();
 
-     void addToVisitedLocations(VisitedLocation visitedLocation);
 
-     List<VisitedLocation> getVisitedLocations();
 
-     void clearVisitedLocations();
 
-     void addUserReward(UserReward userReward);
-
-    public VisitedLocation getLastVisitedLocation();
 
 
 }

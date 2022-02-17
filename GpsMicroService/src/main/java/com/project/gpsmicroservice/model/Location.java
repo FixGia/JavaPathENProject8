@@ -1,12 +1,16 @@
 package com.project.gpsmicroservice.model;
 
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Location {
 
-    public final double longitude;
-    public final double latitude;
+    private double longitude;
+    private double latitude;
 
 }

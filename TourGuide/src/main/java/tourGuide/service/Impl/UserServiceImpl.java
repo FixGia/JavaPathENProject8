@@ -3,12 +3,12 @@ package tourGuide.service.Impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tourGuide.model.User;
-import tourGuide.model.UserReward;
-import tourGuide.model.VisitedLocation;
 import tourGuide.service.UserService;
-import tourGuide.tracker.InternalTestHelper;
+import tourGuide.helper.InternalTestHelper;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 
 @Service
@@ -60,32 +60,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return null;
+    public List<User> getAllUsers(){
+        return new ArrayList<>(internalTestHelper.getInternalUserMap().values());
     }
 
-    @Override
-    public void addToVisitedLocations(VisitedLocation visitedLocation) {
 
-    }
-
-    @Override
-    public List<VisitedLocation> getVisitedLocations() {
-        return null;
-    }
-
-    @Override
-    public void clearVisitedLocations() {
-
-    }
-
-    @Override
-    public void addUserReward(UserReward userReward) {
-
-    }
-
-    @Override
-    public VisitedLocation getLastVisitedLocation() {
-        return null;
-    }
 }

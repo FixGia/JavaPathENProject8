@@ -1,11 +1,9 @@
-package tourGuide.tracker;
+package tourGuide.helper;
 
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import tourGuide.service.GpsService;
+import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
 import javax.annotation.PostConstruct;
@@ -21,7 +19,7 @@ public class Initializer {
     private boolean isPerformanceTest;
     private InternalTestHelper internalTestHelper;
     private UserService userService;
-    private GpsService gpsService;
+    private LocationService gpsService;
     private Tracker tracker;
 
     public Initializer(InternalTestHelper internalTestHelper) {

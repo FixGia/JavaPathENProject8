@@ -1,24 +1,42 @@
 package com.project.gpsmicroservice.controller;
 
-import com.project.gpsmicroservice.service.LocationService;
-import gpsUtil.location.VisitedLocation;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.project.gpsmicroservice.Dto.AttractionRequest;
+import com.project.gpsmicroservice.Dto.VisitedLocationRequest;
+import com.project.gpsmicroservice.Exception.DataNotFoundException;
+import com.project.gpsmicroservice.service.GpsService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.util.List;
+import java.util.UUID;
+
+@Controller
+@RequestMapping("/gps")
+@Slf4j
 public class GpsController {
 
- private LocationService locationService;
+ private GpsService gpsService;
 
-    public GpsController(LocationService locationService) {
-        this.locationService = locationService;
+    public GpsController(GpsService gpsService) {
+        this.gpsService = gpsService;
     }
 
-    @RequestMapping("/getLocation")
-    public String getLocation(@RequestParam String userName) {
+    @RequestMapping("/userLocation/{userId}")
+    public VisitedLocationRequest getLocation(@PathVariable("userId") final UUID userId) {
 
-     return userName;
+        VisitedLocationRequest userLocation = gpsService.getUserLocation(userId);
 
+        if (userLocation == null) {
+            throw  new DataNotFoundException("Fail to get userLocation");
+        }
+        log.info("Get userLocation was a success");
+        return userLocation;
+    }
+
+    @GetMapping("/attractions")
+    public List<AttractionRequest> getAttractions(){
+
+        return gpsService.getAttractions();
     }
 }

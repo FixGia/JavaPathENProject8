@@ -3,8 +3,8 @@ package tourGuide;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import tourGuide.tracker.Initializer;
-import tourGuide.tracker.InternalTestHelper;
+import tourGuide.helper.Initializer;
+import tourGuide.helper.InternalTestHelper;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
