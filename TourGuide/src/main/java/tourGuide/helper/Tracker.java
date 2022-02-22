@@ -26,6 +26,7 @@ public class Tracker extends Thread {
 
 	public Tracker(LocationService gpsService, UserService userService) {
 		this.gpsService = gpsService;
+
 		this.userService = userService;
 	}
 

@@ -5,6 +5,7 @@
     <file type="web" url="file://$PROJECT_DIR$/GpsMicroService" />
     <file type="web" url="file://$PROJECT_DIR$/RewardMicroService" />
     <file type="web" url="file://$PROJECT_DIR$/TourGuide" />
+    <file type="web" url="file://$PROJECT_DIR$/TripDealsMicroService" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="openjdk-17" project-jdk-type="JavaSDK" />
 </project>

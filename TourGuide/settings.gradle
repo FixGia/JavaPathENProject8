@@ -8,3 +8,6 @@
  */
 
 rootProject.name = 'TourGuide'
+include 'TourGuide'
+include 'GpsMicroService'
+include 'RewardMicroService'

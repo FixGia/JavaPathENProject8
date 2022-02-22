@@ -2,9 +2,11 @@ package tourGuide.service.Impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tourGuide.Dto.VisitedLocationRequest;
+
+import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
-import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
@@ -19,10 +21,15 @@ public class LocationServiceImpl implements LocationService {
 
 
     private final UserService userService;
+    private final GpsMicroService microServiceGps;
 
-    public LocationServiceImpl(UserService userService) {
+
+
+    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps) {
         this.userService = userService;
+        this.microServiceGps = microServiceGps;
     }
+
 
     @Override
     public Location getUserLocation(final String userName) {
@@ -47,7 +54,11 @@ public class LocationServiceImpl implements LocationService {
 
 
     @Override
-    public VisitedLocation trackUserLocation(User user) {
+    public VisitedLocationRequest trackUserLocation(User user) {
+
+    //    VisitedLocationRequest visitedLocation = microServiceGps.getLocation(user.getUserId());
+
+     //   return visitedLocation;
         return null;
     }
 

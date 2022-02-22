@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import tourGuide.Dto.VisitedLocationRequest;
 import tourGuide.model.VisitedLocation;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 public interface VisitedLocationService {
 
 
-    void addToVisitedLocations(VisitedLocation visitedLocation);
+    void addToVisitedLocations(VisitedLocationRequest visitedLocation);
 
     List<VisitedLocation> getVisitedLocations();
 
