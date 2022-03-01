@@ -22,14 +22,16 @@ public class GpsController {
         this.gpsService = gpsService;
     }
 
-    @RequestMapping("/userLocation/{userId}")
-    public VisitedLocationRequest getLocation(@PathVariable("userId") final UUID userId) {
+    @GetMapping("/userLocation/{userID}")
+    public VisitedLocationRequest getLocation(@PathVariable("userID") final UUID userId) {
+
 
         VisitedLocationRequest userLocation = gpsService.getUserLocation(userId);
 
         if (userLocation == null) {
             throw  new DataNotFoundException("Fail to get userLocation");
         }
+
         log.info("Get userLocation was a success");
         return userLocation;
     }

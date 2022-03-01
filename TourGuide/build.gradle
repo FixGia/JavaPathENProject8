@@ -40,6 +40,10 @@ targetCompatibility = 1.8
 
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.modelmapper:modelmapper:3.0.0'
+    implementation 'javax.mvc:javax.mvc-api:1.0-pr'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'org.javamoney', name: 'moneta', version: '1.3'

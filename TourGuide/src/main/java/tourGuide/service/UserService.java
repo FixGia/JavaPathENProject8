@@ -1,7 +1,9 @@
 package tourGuide.service;
 
 
+import tourGuide.Dto.UserPreferencesRequest;
 import tourGuide.model.User;
+import tourGuide.model.UserPreferences;
 import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 
@@ -11,11 +13,9 @@ public interface UserService {
 
     User getUser(String userName);
 
-     void addUser(User user);
+    void addUser(User user);
 
-     void deleteUser();
-
-    void updateUserPreferences();
+    UserPreferences updateUserPreferences(String username, UserPreferencesRequest userPreferencesRequest);
 
      List<User> getAllUsers();
 

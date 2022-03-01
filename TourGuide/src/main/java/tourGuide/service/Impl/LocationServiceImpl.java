@@ -2,16 +2,22 @@ package tourGuide.service.Impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tourGuide.Dto.AttractionRecommendationRequest;
+import tourGuide.Dto.AttractionRequest;
+import tourGuide.Dto.NearAttraction;
 import tourGuide.Dto.VisitedLocationRequest;
 
 import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
 import tourGuide.service.LocationService;
+import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
+import tourGuide.util.DistanceCalculator;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 
@@ -22,12 +28,15 @@ public class LocationServiceImpl implements LocationService {
 
     private final UserService userService;
     private final GpsMicroService microServiceGps;
+    private final DistanceCalculator distanceCalculator;
+    private final RewardService rewardService;
 
 
-
-    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps) {
+    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps, DistanceCalculator distanceCalculator, RewardService rewardService) {
         this.userService = userService;
         this.microServiceGps = microServiceGps;
+        this.distanceCalculator = distanceCalculator;
+        this.rewardService = rewardService;
     }
 
 
@@ -36,9 +45,14 @@ public class LocationServiceImpl implements LocationService {
 
         User user = userService.getUser(userName);
 
-      Location userLocation =  user.getLastVisitedLocation().getLocation();
+       if (user.getVisitedLocations().size()> 0){
+           log.info("{}", user.getLastVisitedLocation().getLocation());
+            return user.getLastVisitedLocation().getLocation();
+       }
 
-      return userLocation;
+        log.info("display location via GpsMicroService {}", microServiceGps.getLocation(user.getUserId()).getLocation());
+        return microServiceGps.getLocation(user.getUserId()).getLocation();
+
     }
 
     public Map<String, Location> getCurrentLocationForAllUsers() {
@@ -51,15 +65,71 @@ public class LocationServiceImpl implements LocationService {
 
     }
 
-
-
     @Override
     public VisitedLocationRequest trackUserLocation(User user) {
 
-    //    VisitedLocationRequest visitedLocation = microServiceGps.getLocation(user.getUserId());
+        return microServiceGps.getLocation(user.getUserId());
 
-     //   return visitedLocation;
-        return null;
     }
+
+    /** Get Map with Near Five Attractions
+     * Key Attraction
+     * Value Double for Location
+     * @param attractions List of Attractions
+     */
+    private Map<AttractionRequest, Double> GetNearFiveAttractions (Map<AttractionRequest, Double> attractions) {
+
+        return attractions
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .limit(5)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (entry1, entry2) -> entry1, LinkedHashMap::new));
+    }
+
+    /**
+     * Get a Map
+     * Key = Attraction
+     * Value = Distance between Attraction and User
+     * @param userLocation location's user
+     * @param attractions List of all attractions
+     * @return
+     */
+    private Map<AttractionRequest, Double> getAttractionsMaps(Location userLocation, List<AttractionRequest> attractions){
+
+        Map<AttractionRequest, Double> attractionsMap= new HashMap<>();
+        attractions.forEach(a -> attractionsMap.put(a, distanceCalculator.getDistanceInMiles(userLocation,a.getLocation())));
+        return attractionsMap;
+    }
+
+    /**
+     * Get New AttractionRecommendation For An User
+     *
+     * @param userName String username
+     *
+     * @return new AttractionRecommendation
+     */
+    public AttractionRecommendationRequest AttractionRecommendedForUser(String userName) {
+
+        User user = userService.getUser(userName);
+        Location userLocation = getUserLocation(userName);
+        List<AttractionRequest> attractions = microServiceGps.getAttractions();
+        List<NearAttraction> nearAttractions = new ArrayList<>();
+
+
+        Map<AttractionRequest, Double> nearFiveAttractions = GetNearFiveAttractions(getAttractionsMaps(userLocation, attractions));
+        nearFiveAttractions
+                .entrySet()
+                .stream()
+                .forEach(a -> nearAttractions
+                        .add(new NearAttraction(a.getKey().getAttractionName(),
+                                a.getKey().getLocation(),
+                                a.getValue().intValue(),
+                                rewardService.getAttractionsRewardPoints(user,a))));
+
+        return new AttractionRecommendationRequest(userLocation, nearAttractions);
+    }
+
+
 
 }

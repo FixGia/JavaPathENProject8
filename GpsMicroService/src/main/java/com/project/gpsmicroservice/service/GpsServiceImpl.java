@@ -29,18 +29,18 @@ private final GpsMapper gpsMapper;
 
     /**
      * Get the User's location
-     * @param userId the user id
+     * @param userID the user id
      * @return the user's location
      */
-    public VisitedLocationRequest getUserLocation(final UUID userId) {
+    public VisitedLocationRequest getUserLocation(final UUID userID) {
 
-        if (userId == null) {
+        if (userID == null) {
             throw new DataNotFoundException ("UserID wasn't found");
         }
         VisitedLocation visitedLocation = gpsUtil
-                .getUserLocation(userId);
+                .getUserLocation(userID);
 
-        log.info("Get Location's User with UUID {} was a success", userId);
+        log.info("Get Location's User with UUID {} was a success", userID);
         return gpsMapper.mapVisitedLocationToVisitedLocationRequest(visitedLocation) ;
     }
 

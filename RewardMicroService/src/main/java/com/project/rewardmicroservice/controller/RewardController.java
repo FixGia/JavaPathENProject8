@@ -12,7 +12,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/rewards")
 @Slf4j
-
 public class RewardController {
 
     private final RewardService rewardService;

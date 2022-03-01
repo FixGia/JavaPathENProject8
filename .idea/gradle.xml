@@ -33,6 +33,7 @@
             <option value="$PROJECT_DIR$/TourGuide/GpsMicroService" />
             <option value="$PROJECT_DIR$/TourGuide/RewardMicroService" />
             <option value="$PROJECT_DIR$/TourGuide/TourGuide" />
+            <option value="$PROJECT_DIR$/TourGuide/TripDealsMicroService" />
           </set>
         </option>
       </GradleProjectSettings>

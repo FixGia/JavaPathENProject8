@@ -1,10 +1,14 @@
 package tourGuide.service.Impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
+import tourGuide.Dto.UserPreferencesRequest;
+import tourGuide.Exception.DataNotFoundException;
 import tourGuide.model.User;
+import tourGuide.model.UserPreferences;
 import tourGuide.service.UserService;
-import tourGuide.helper.InternalTestHelper;
+import tourGuide.util.InternalTestHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +32,11 @@ public class UserServiceImpl implements UserService {
 
         if (userToGet != null) {
             log.info("user {} was found", userToGet.getUserName());
-           return userToGet;
+            return userToGet;
         }
 
-        log.error("user {} wasn't exist", userToGet.getUserName());
-        return  null;
+        log.error("user {} wasn't exist", userName);
+        return null;
 
     }
 
@@ -49,19 +53,38 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public void deleteUser() {
-
-    }
 
     @Override
-    public void updateUserPreferences() {
+    public UserPreferences updateUserPreferences(final String username,
+                                      final UserPreferencesRequest userPreferencesRequest) {
+
+        User userToGet = getUser(username);
+        if (userToGet != null) {
+
+            UserPreferences userPreferences = userToGet.getUserPreferences();
+
+            userPreferences.setAttractionProximity(userPreferencesRequest.getAttractionProximity());
+            userPreferences.setTripDuration(userPreferencesRequest.getTripDuration());
+            userPreferences.setTicketQuantity(userPreferencesRequest.getTicketQuantity());
+            userPreferences.setNumberOfAdults(userPreferencesRequest.getNumberOfAdults());
+            userPreferences.setNumberOfChildren(userPreferencesRequest.getNumberOfChildren());
+            userPreferences.setLowerPricePoint(Money.of(userPreferencesRequest.getLowerPrincePoint(), userPreferences.getCurrency()));
+            userPreferences.setHighPricePoint(Money.of(userPreferencesRequest.getHighPricePoint(), userPreferences.getCurrency()));
+
+            log.info("User Preferences was updated");
+            return userPreferences;
+        }
+
+        log.error("User Preferences wasn't updated because userToGet wasn't exist");
+        throw new DataNotFoundException("User doesn't exist");
 
     }
 
     @Override
     public List<User> getAllUsers(){
+
         return new ArrayList<>(internalTestHelper.getInternalUserMap().values());
+
     }
 
 

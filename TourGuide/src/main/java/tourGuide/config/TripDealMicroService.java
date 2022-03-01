@@ -7,7 +7,7 @@ import tourGuide.Dto.ProviderRequest;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(value = "TripDealMicroService", url = "${CLIENT_PROVIDER_BASE_URL:http://localhost:8083/tripdeal}")
+@FeignClient(value = "TripDealMicroService", url = "${CLIENT_PROVIDER_BASE_URL:http://localhost:8083/tripDeals}")
 public interface TripDealMicroService {
 
     @GetMapping("/providers/{apiKey}/{userId}/{adults}/{children}/{nightsStay}/{rewardPoints}")

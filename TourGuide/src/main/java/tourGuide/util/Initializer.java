@@ -1,8 +1,9 @@
-package tourGuide.helper;
+package tourGuide.util;
 
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import tourGuide.config.GpsMicroService;
 import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
@@ -11,16 +12,14 @@ import javax.annotation.PostConstruct;
 
 @Service
 @Slf4j
-
 public class Initializer {
 
 
     private boolean isTestMode ;
     private boolean isPerformanceTest;
     private InternalTestHelper internalTestHelper;
-    private UserService userService;
-    private LocationService gpsService;
     private Tracker tracker;
+
 
     public Initializer(InternalTestHelper internalTestHelper) {
         this.internalTestHelper = internalTestHelper;

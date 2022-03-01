@@ -23,7 +23,7 @@ public class RewardMSModule {
     @Bean
     public RewardCentral getRewardCentral(){
 
-        logger.info(" GpsUtil() BEAN called");
+        logger.info(" RewardCentral has been called");
         return new RewardCentral();
     }
 

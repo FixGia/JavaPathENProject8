@@ -11,5 +11,10 @@
         <module name="GpsMicroService.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="TripDealsMicroService" target="1.8" />
+      <module name="TripDealsMicroService.main" target="1.8" />
+      <module name="TripDealsMicroService.test" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

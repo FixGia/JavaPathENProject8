@@ -1,30 +1,33 @@
 package tourGuide.controller;
 
 import com.jsoniter.output.JsonStream;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import tourGuide.Dto.UserPreferencesRequest;
 import tourGuide.model.User;
 import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 @RestController
+@Slf4j
 public class UserController {
 
-    private final LocationService gpsService;
     private final UserService userService;
 
-    public UserController(LocationService locationService, UserService userService) {
-        this.gpsService = locationService;
+    public UserController(UserService userService) {
+
         this.userService = userService;
     }
 
     @RequestMapping("/getUser")
-    public String getUser(@RequestParam String username){
+    public User getUser(@RequestParam String userName){
 
-        User user = userService.getUser(username);
+        log.info("##Controller /getUser ==> Request for user {} : ", userName);
+        return userService.getUser(userName);
 
-        return JsonStream.serialize(user);
     }
 
     @RequestMapping("getAllUsers")
@@ -34,7 +37,10 @@ public class UserController {
 
     }
 
+    @PutMapping("/updateUserPreferences")
+    public String updateUserPreferences(@Valid @RequestBody final UserPreferencesRequest userPreferencesRequest, @RequestParam @NotNull final String userName){
 
 
-
+        return JsonStream.serialize(userService.updateUserPreferences(userName,userPreferencesRequest));
+    }
 }

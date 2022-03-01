@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import tourGuide.Dto.AttractionRecommendationRequest;
 import tourGuide.Dto.VisitedLocationRequest;
 import tourGuide.model.Location;
 import tourGuide.model.User;
@@ -10,11 +11,15 @@ import java.util.Map;
 
 public interface LocationService {
 
-    public Location getUserLocation(String userName);
+    Location getUserLocation(String userName);
 
-    public VisitedLocationRequest trackUserLocation(User user);
+    VisitedLocationRequest trackUserLocation(User user);
 
-    public Map<String, Location> getCurrentLocationForAllUsers();
+    Map<String, Location> getCurrentLocationForAllUsers();
+
+    AttractionRecommendationRequest AttractionRecommendedForUser(String userName);
+
+
 
 
 }
