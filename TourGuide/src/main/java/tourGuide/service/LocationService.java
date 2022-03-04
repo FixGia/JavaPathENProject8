@@ -8,12 +8,13 @@ import tourGuide.model.VisitedLocation;
 
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface LocationService {
 
     Location getUserLocation(String userName);
 
-    VisitedLocationRequest trackUserLocation(User user);
+    CompletableFuture<?> trackUserLocation(User user);
 
     Map<String, Location> getCurrentLocationForAllUsers();
 

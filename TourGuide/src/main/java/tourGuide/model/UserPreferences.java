@@ -3,6 +3,7 @@ package tourGuide.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.javamoney.moneta.Money;
+import tourGuide.Dto.UserPreferencesRequest;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -58,4 +59,5 @@ public class UserPreferences {
 		this.numberOfAdults = numberOfAdults;
 		this.numberOfChildren = numberOfChildren;
 	}
+
 }

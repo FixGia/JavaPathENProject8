@@ -27,6 +27,7 @@ public class RewardServiceImpl implements RewardService {
      */
     public int getRewardPoints(final UUID attractionId, final UUID userId) {
         //TODO user try catch ??
+
         int rewardPoint = rewardCentral.getAttractionRewardPoints(attractionId, userId);
         log.info("RewardPoint to user's id {} from attraction's with id {}", userId, attractionId);
         return rewardPoint;

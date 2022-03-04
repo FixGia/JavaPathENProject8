@@ -46,7 +46,8 @@ public class LocationController {
     public String getTrack(@RequestParam @Valid String userName) {
 
         User user = userService.getUser(userName);
-        return "Success" + user;
+        gpsService.trackUserLocation(user);
+        return "Success" + gpsService.trackUserLocation(user);
     }
 
     @GetMapping("/nearbyAttractions")

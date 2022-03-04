@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.javamoney.moneta.Money;
 import org.springframework.stereotype.Service;
 import tourGuide.Dto.UserPreferencesRequest;
+import tourGuide.Exception.DataAlreadyExistException;
 import tourGuide.Exception.DataNotFoundException;
 import tourGuide.model.User;
 import tourGuide.model.UserPreferences;
@@ -35,8 +36,8 @@ public class UserServiceImpl implements UserService {
             return userToGet;
         }
 
-        log.error("user {} wasn't exist", userName);
-        return null;
+
+        throw new DataNotFoundException("user doesn't found");
 
     }
 
@@ -44,13 +45,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(User user) {
 
-        if(!internalTestHelper.getInternalUserMap().containsKey(user.getUserName())) {
+        if (!internalTestHelper.getInternalUserMap().containsKey(user.getUserName())) {
             internalTestHelper.getInternalUserMap().put(user.getUserName(), user);
             log.info("user {} was added", user.getUserName());
         }
-
-        log.error("user {} wasn't added", user.getUserName());
-
+        else throw new DataAlreadyExistException("user exist already");
     }
 
 

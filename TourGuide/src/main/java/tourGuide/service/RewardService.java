@@ -1,6 +1,7 @@
 package tourGuide.service;
 
 import tourGuide.Dto.AttractionRequest;
+import tourGuide.model.Attraction;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 
@@ -14,6 +15,6 @@ public interface RewardService {
 
    void calculateRewards(User user);
 
-   int getAttractionsRewardPoints(User user, Map.Entry<AttractionRequest,Double> attractionsMapEntry);
+   int getAttractionsRewardPoints(User user, AttractionRequest attraction);
 
 }

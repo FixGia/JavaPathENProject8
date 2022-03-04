@@ -71,6 +71,7 @@ public class User {
 	 * @param userReward the reward
 	 */
 
+	//TODO method doesn't work fine must recode
 	public void addUserReward(UserReward userReward) {
 		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0)
 		{

@@ -1,13 +1,16 @@
 package tourGuide.Dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.javamoney.moneta.Money;
 import tourGuide.constant.Constraints;
 
 import javax.validation.constraints.Min;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserPreferencesRequest {
 
     @Min(value = Constraints.PROXIMITY_LOWER_LIMIT,
@@ -37,5 +40,6 @@ public class UserPreferencesRequest {
     @Min(value = Constraints.HIGH_PRICE_POINT_VALUE,
             message = "Valid value required")
     private int highPricePoint;
+
 
 }

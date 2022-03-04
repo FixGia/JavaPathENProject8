@@ -46,7 +46,6 @@ public class GpsIntegrationTest {
         VisitedLocationRequest requestResult = gpsService.getUserLocation(userId);
 
         assertNotNull(requestResult);
-        assertNotNull(requestResult.getLocation().longitude);
 
     }
 

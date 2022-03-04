@@ -27,9 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
-@DisplayName("##Service from Gps MicroService - Unit Test")
+@DisplayName("Service from Gps MicroService Unit Test")
 @ExtendWith(MockitoExtension.class)
 public class UnitTestService {
 
@@ -41,11 +40,7 @@ public class UnitTestService {
 
     private static UUID userID;
 
-    private static gpsUtil.location.Location location1;
-
     private static Location location2;
-
-    private static Date date;
 
     private static VisitedLocation visitedLocation;
 
@@ -62,12 +57,12 @@ public class UnitTestService {
 
         userID = UUID.fromString("c8615b95-05d0-44aa-952a-531c91215967");
 
-        location1 = new gpsUtil.location.Location(33.817595, -117.922008);
+        gpsUtil.location.Location location1 = new gpsUtil.location.Location(33.817595, -117.922008);
         location2 = new Location(43.582767, -110.821999);
 
-        date = new Date();
+        Date date = new Date();
 
-        visitedLocation = new VisitedLocation(userID,location1,date);
+        visitedLocation = new VisitedLocation(userID, location1, date);
 
         attraction1 = new Attraction("nameTest1", "CityTest1", "StateTest", 33.817595, -117.922008);
         attraction2 = new Attraction("NameTest2", "CityTest2" , "StateTEst2",
@@ -107,6 +102,9 @@ public class UnitTestService {
                 -> gpsService.getUserLocation(null));
     }
 
+    @DisplayName("Check Method = GetAttractions"
+            +" when GetAttractions,"+
+            " return Attraction's List")
     @Test
     public void TestGetAttractions(){
 

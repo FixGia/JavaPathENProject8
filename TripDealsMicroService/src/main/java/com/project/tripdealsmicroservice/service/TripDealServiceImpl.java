@@ -37,7 +37,7 @@ public class TripDealServiceImpl implements TripDealService {
                 nightsStay,
                 rewardPoints);
 
-        providerList.forEach(provider -> providerRequestList.add(new ProviderRequest()));
+        providerList.forEach(provider -> providerRequestList.add(new ProviderRequest(provider.name,provider.price,provider.tripId)));
 
         log.info("provider list : {}",providerRequestList);
         return providerRequestList;

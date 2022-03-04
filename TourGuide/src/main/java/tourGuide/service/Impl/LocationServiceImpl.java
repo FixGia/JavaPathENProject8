@@ -17,7 +17,8 @@ import tourGuide.util.DistanceCalculator;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +31,10 @@ public class LocationServiceImpl implements LocationService {
     private final GpsMicroService microServiceGps;
     private final DistanceCalculator distanceCalculator;
     private final RewardService rewardService;
+    private final ExecutorService executorService = Executors
+            .newFixedThreadPool(1000);
+
+
 
 
     public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps, DistanceCalculator distanceCalculator, RewardService rewardService) {
@@ -66,10 +71,20 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public VisitedLocationRequest trackUserLocation(User user) {
+    public CompletableFuture<?> trackUserLocation(User user) {
 
-        return microServiceGps.getLocation(user.getUserId());
+        return CompletableFuture.supplyAsync(() -> {
 
+                    VisitedLocationRequest visitedLocation = microServiceGps
+                            .getLocation(user.getUserId());
+
+
+            CompletableFuture.runAsync(() -> {
+                rewardService.calculateRewards(user);});
+
+            return visitedLocation;}
+
+                ,executorService);
     }
 
     /** Get Map with Near Five Attractions
@@ -125,7 +140,7 @@ public class LocationServiceImpl implements LocationService {
                         .add(new NearAttraction(a.getKey().getAttractionName(),
                                 a.getKey().getLocation(),
                                 a.getValue().intValue(),
-                                rewardService.getAttractionsRewardPoints(user,a))));
+                                rewardService.getAttractionsRewardPoints(user,a.getKey()))));
 
         return new AttractionRecommendationRequest(userLocation, nearAttractions);
     }

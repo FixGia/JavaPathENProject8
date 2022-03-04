@@ -16,6 +16,7 @@ import tourGuide.util.DistanceCalculator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
@@ -49,38 +50,41 @@ public class RewardServiceImpl implements RewardService {
 
     }
 
-    public int getAttractionsRewardPoints(User user, Map.Entry<AttractionRequest,Double> attractionsMapEntry) {
+    public int getAttractionsRewardPoints(User user, AttractionRequest attraction) {
 
-        return rewardMicroService.getRewardPoint(attractionsMapEntry.getKey().getAttractionId(), user.getUserId());
+        return rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId());
 
 
     }
 
+    public UserReward getRewardsPoint(final User user, VisitedLocation visitedLocation, AttractionRequest attraction) {
+
+        return new UserReward(
+                visitedLocation,
+                new Attraction(attraction.getAttractionName(), attraction.getCity(), attraction.getState(),attraction.getLocation(),attraction.getAttractionId()),
+                rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId()));
+
+    }
 
     public void calculateRewards(User user) {
 
 
-        // Variant Thread-Safe of ArrayList
+        //CopyOnWriteArrayList = Variant Thread-Safe of ArrayList
         CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>();
         userLocations.addAll(user.getVisitedLocations());
 
         CopyOnWriteArrayList<AttractionRequest> attractions= new CopyOnWriteArrayList<>();
         attractions.addAll(gpsMicroService.getAttractions());
 
-
-        for(VisitedLocation visitedLocation : userLocations) {
-            for(AttractionRequest attraction : attractions) {
-              if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.getAttractionName())).count() == 0) {
-                    if(distanceCalculator.nearAttraction(visitedLocation.getLocation(), attraction.getLocation())) {
-                      user.addUserReward(new UserReward(visitedLocation,
-                               new Attraction(attraction.getAttractionName(), attraction.getCity(), attraction.getState(), attraction.getAttractionId()),
-                              rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId())));
+        userLocations.stream().forEach(visitedLocation -> {
+            attractions.stream().filter(attractionRequest ->
+                    distanceCalculator.isWithinAttractionProximity(attractionRequest, attractionRequest.getLocation()))
+                    .forEach(attractionRequest -> {
+                        user.addUserReward(getRewardsPoint(user,visitedLocation,attractionRequest)
+                        );
+                    } );
+        });
 
                     }
                 }
-            }
-        }
-    }
 
-
-}
