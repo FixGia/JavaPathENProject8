@@ -14,6 +14,7 @@ import tourGuide.Dto.AttractionRequest;
 import tourGuide.config.GpsMicroService;
 import tourGuide.model.User;
 import tourGuide.model.VisitedLocation;
+import tourGuide.service.LocationService;
 import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 import tourGuide.util.Initializer;
@@ -39,6 +40,8 @@ public class TestPerformance {
 
 	@Autowired
 	private GpsMicroService gpsMicroService;
+	@Autowired
+	LocationService locationService;
 	@Autowired
 	private RewardService rewardService;
 	@Autowired
@@ -85,7 +88,7 @@ public class TestPerformance {
 		stopWatch.start();
 
 		CompletableFuture<?>[] futures = allUsers.parallelStream()
-				.map(tracker::trackUserLocation)
+				.map(locationService::trackUserLocation)
 				.toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(futures).join();
 		stopWatch.stop();
@@ -101,7 +104,6 @@ public class TestPerformance {
 			assertEquals(initialVisitedLocationsCount.get(i) + 1, (int) newVisitedLocationsCount.get(i));
 		}
 
-//
 		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
@@ -112,20 +114,13 @@ public class TestPerformance {
 	@Test
 	public void highVolumeGetRewards() {
 
-		List<User> allUsers = userService.getAllUsers();
-		allUsers.forEach(User::clearVisitedLocations);
-
-		List<Integer> initialVisitedLocationsCount = allUsers
-				.stream()
-				.map(u -> u
-						.getVisitedLocations().size())
-				.collect(Collectors.toList());
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		initializer.initialization();
 		AttractionRequest attractionRequest = gpsMicroService.getAttractions().get(0);
-	//	List<User> allUsers = userService.getAllUsers();
+		List<User> allUsers = userService.getAllUsers();
+		System.out.println(allUsers.size());
+
 		allUsers.forEach(user -> {
 			user.clearVisitedLocations();
 			user.getUserRewards().clear();
@@ -137,13 +132,15 @@ public class TestPerformance {
 		});
 
 
-		allUsers.forEach(user -> rewardService.calculateRewards(user));
+		CompletableFuture<?>[] futures = allUsers.stream().map(rewardService::calculateRewardsWithCompletableFuture).toArray(CompletableFuture[]::new);
+		CompletableFuture.allOf(futures).join();
+
+		stopWatch.stop();
 
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size()>0);
 		}
-		stopWatch.stop();
-		tracker.stopTracking();
+
 
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));

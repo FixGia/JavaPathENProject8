@@ -6,6 +6,7 @@ import tourGuide.Dto.AttractionRecommendationRequest;
 import tourGuide.Dto.AttractionRequest;
 import tourGuide.Dto.NearAttraction;
 
+import tourGuide.Dto.VisitedLocationRequest;
 import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
@@ -32,18 +33,17 @@ public class LocationServiceImpl implements LocationService {
     private final GpsMicroService microServiceGps;
     private final DistanceCalculator distanceCalculator;
     private final RewardService rewardService;
-    private final Tracker tracker;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10000);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1000);
 
 
 
 
-    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps, DistanceCalculator distanceCalculator, RewardService rewardService, Tracker tracker) {
+    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps, DistanceCalculator distanceCalculator, RewardService rewardService) {
         this.userService = userService;
         this.microServiceGps = microServiceGps;
         this.distanceCalculator = distanceCalculator;
         this.rewardService = rewardService;
-        this.tracker = tracker;
+
     }
 
 
@@ -62,7 +62,25 @@ public class LocationServiceImpl implements LocationService {
 
     }
 
+    public CompletableFuture<?> trackUserLocation(User user) {
 
+        return CompletableFuture.supplyAsync(() -> {
+                    VisitedLocationRequest visitedLocation = microServiceGps
+                            .getLocation(user.getUserId());
+
+                    VisitedLocation visitedLocationToAdd = new VisitedLocation(visitedLocation.getUserId(),visitedLocation.getLocation(),visitedLocation.getTimeVisited());
+
+                    user.addToVisitedLocations(visitedLocationToAdd);
+
+                    CompletableFuture.runAsync(() -> {
+                        rewardService.calculateRewards(user);
+                    });
+
+                    return visitedLocation;
+
+                },
+                executorService);
+    }
 
     public Map<String, Location> getCurrentLocationForAllUsers() {
 
@@ -74,12 +92,7 @@ public class LocationServiceImpl implements LocationService {
 
     }
 
-    public void finalizeLocation(User user, VisitedLocation visitedLocation) {
-        user.addToVisitedLocations(visitedLocation);
-        rewardService.calculateRewards(user);
-        tracker.finalizeTrack(user);
 
-    }
     /** Get Map with Near Five Attractions
      * Key Attraction
      * Value Double for Location

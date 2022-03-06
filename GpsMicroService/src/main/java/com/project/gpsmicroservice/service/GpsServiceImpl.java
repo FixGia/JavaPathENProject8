@@ -24,7 +24,7 @@ public class GpsServiceImpl implements GpsService {
 
 private final GpsUtil gpsUtil;
 private final GpsMapper gpsMapper;
-private ExecutorService executorService = Executors.newFixedThreadPool(10000);
+ExecutorService executorService = Executors.newFixedThreadPool(1000);
 
     public GpsServiceImpl(GpsUtil gpsUtil, GpsMapper gpsMapper) {
         this.gpsUtil = gpsUtil;

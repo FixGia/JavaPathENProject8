@@ -77,7 +77,6 @@ public class RewardServiceImpl implements RewardService {
     public void calculateRewards(User user) {
 
 
-        //CopyOnWriteArrayList = Variant Thread-Safe of ArrayList
         CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>(user.getVisitedLocations());
 
         CopyOnWriteArrayList<AttractionRequest> attractions = new CopyOnWriteArrayList<>(gpsMicroService.getAttractions());

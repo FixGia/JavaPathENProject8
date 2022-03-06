@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +29,7 @@ public class Tracker extends Thread {
 
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	ExecutorService executorService = Executors.newSingleThreadExecutor();
 	private final GpsMicroService gpsMicroService;
 	private final RewardService rewardService;
 	private final UserService userService;
@@ -105,29 +106,13 @@ public class Tracker extends Thread {
 		completedTrackingMap.put(user, true);
 	}
 
+
 	public void trackUser(User user) {
 		gpsMicroService.getLocation(user.getUserId());
+
 	}
 
-	public CompletableFuture<?> trackUserLocation(User user) {
 
-		return CompletableFuture.supplyAsync(() -> {
-					VisitedLocationRequest visitedLocation = gpsMicroService
-							.getLocation(user.getUserId());
-
-					VisitedLocation visitedLocationToAdd = new VisitedLocation(visitedLocation.getUserId(),visitedLocation.getLocation(),visitedLocation.getTimeVisited());
-
-					user.addToVisitedLocations(visitedLocationToAdd);
-
-					CompletableFuture.runAsync(() -> {
-						rewardService.calculateRewards(user);
-					});
-
-					return visitedLocation;
-
-				},
-				executorService);
-	}
 
 
 

@@ -18,7 +18,7 @@ public interface LocationService {
 
     AttractionRecommendationRequest AttractionRecommendedForUser(String userName);
 
-
+    public CompletableFuture<?> trackUserLocation(User user);
 
 
 }

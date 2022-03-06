@@ -20,16 +20,16 @@ public class Initializer {
 
 
     private final InternalTestHelper internalTestHelper;
-    private final LocationService locationService;
+
     private final GpsMicroService gpsMicroService;
     private final RewardService rewardService;
     private final UserService userService;
     public Tracker tracker;
 
 
-    public Initializer(InternalTestHelper internalTestHelper, LocationService locationService, GpsMicroService gpsMicroService, RewardService rewardService, UserService userService) {
+    public Initializer(InternalTestHelper internalTestHelper, GpsMicroService gpsMicroService, RewardService rewardService, UserService userService) {
         this.internalTestHelper = internalTestHelper;
-        this.locationService = locationService;
+
         this.gpsMicroService = gpsMicroService;
         this.rewardService = rewardService;
         this.userService = userService;
@@ -52,7 +52,8 @@ public class Initializer {
         }
 
 
-        private void addShutDownHook() {
+    private void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> tracker.stopTracking()));
     }
+
 }
