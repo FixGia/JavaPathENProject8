@@ -5,15 +5,16 @@ import org.springframework.stereotype.Service;
 import tourGuide.Dto.AttractionRecommendationRequest;
 import tourGuide.Dto.AttractionRequest;
 import tourGuide.Dto.NearAttraction;
-import tourGuide.Dto.VisitedLocationRequest;
 
 import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
+import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 import tourGuide.util.DistanceCalculator;
+import tourGuide.util.Tracker;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -31,17 +32,18 @@ public class LocationServiceImpl implements LocationService {
     private final GpsMicroService microServiceGps;
     private final DistanceCalculator distanceCalculator;
     private final RewardService rewardService;
-    private final ExecutorService executorService = Executors
-            .newFixedThreadPool(1000);
+    private final Tracker tracker;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10000);
 
 
 
 
-    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps, DistanceCalculator distanceCalculator, RewardService rewardService) {
+    public LocationServiceImpl(UserService userService, GpsMicroService microServiceGps, DistanceCalculator distanceCalculator, RewardService rewardService, Tracker tracker) {
         this.userService = userService;
         this.microServiceGps = microServiceGps;
         this.distanceCalculator = distanceCalculator;
         this.rewardService = rewardService;
+        this.tracker = tracker;
     }
 
 
@@ -50,15 +52,17 @@ public class LocationServiceImpl implements LocationService {
 
         User user = userService.getUser(userName);
 
-       if (user.getVisitedLocations().size()> 0){
-           log.info("{}", user.getLastVisitedLocation().getLocation());
+        if (user.getVisitedLocations().size()> 0){
+            log.info("{}", user.getLastVisitedLocation().getLocation());
             return user.getLastVisitedLocation().getLocation();
-       }
+        }
 
         log.info("display location via GpsMicroService {}", microServiceGps.getLocation(user.getUserId()).getLocation());
         return microServiceGps.getLocation(user.getUserId()).getLocation();
 
     }
+
+
 
     public Map<String, Location> getCurrentLocationForAllUsers() {
 
@@ -66,27 +70,16 @@ public class LocationServiceImpl implements LocationService {
                 .stream()
                 .parallel()
                 .collect(Collectors.toMap(user -> user.getUserId().toString(),
-                user -> getUserLocation(user.getUserName()))));
+                user -> user.getLastVisitedLocation().getLocation())));
 
     }
 
-    @Override
-    public CompletableFuture<?> trackUserLocation(User user) {
+    public void finalizeLocation(User user, VisitedLocation visitedLocation) {
+        user.addToVisitedLocations(visitedLocation);
+        rewardService.calculateRewards(user);
+        tracker.finalizeTrack(user);
 
-        return CompletableFuture.supplyAsync(() -> {
-
-                    VisitedLocationRequest visitedLocation = microServiceGps
-                            .getLocation(user.getUserId());
-
-
-            CompletableFuture.runAsync(() -> {
-                rewardService.calculateRewards(user);});
-
-            return visitedLocation;}
-
-                ,executorService);
     }
-
     /** Get Map with Near Five Attractions
      * Key Attraction
      * Value Double for Location
@@ -127,7 +120,7 @@ public class LocationServiceImpl implements LocationService {
     public AttractionRecommendationRequest AttractionRecommendedForUser(String userName) {
 
         User user = userService.getUser(userName);
-        Location userLocation = getUserLocation(userName);
+       Location userLocation = user.getLastVisitedLocation().getLocation();
         List<AttractionRequest> attractions = microServiceGps.getAttractions();
         List<NearAttraction> nearAttractions = new ArrayList<>();
 

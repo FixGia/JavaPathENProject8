@@ -15,9 +15,10 @@ import tourGuide.util.DistanceCalculator;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
@@ -27,13 +28,15 @@ public class RewardServiceImpl implements RewardService {
     private final RewardMicroService rewardMicroService;
     private final DistanceCalculator distanceCalculator;
     private final GpsMicroService gpsMicroService;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1000);
+
 
     public RewardServiceImpl(UserService userService, RewardMicroService rewardMicroService, DistanceCalculator distanceCalculator, GpsMicroService gpsMicroService) {
         this.userService = userService;
         this.rewardMicroService = rewardMicroService;
         this.distanceCalculator = distanceCalculator;
-
         this.gpsMicroService = gpsMicroService;
+
     }
 
     @Override
@@ -66,17 +69,20 @@ public class RewardServiceImpl implements RewardService {
 
     }
 
+    public CompletableFuture<?> calculateRewardsWithCompletableFuture (User user) {
+
+        return CompletableFuture.runAsync(() -> calculateRewards(user),
+                executorService);
+    }
     public void calculateRewards(User user) {
 
 
         //CopyOnWriteArrayList = Variant Thread-Safe of ArrayList
-        CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>();
-        userLocations.addAll(user.getVisitedLocations());
+        CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>(user.getVisitedLocations());
 
-        CopyOnWriteArrayList<AttractionRequest> attractions= new CopyOnWriteArrayList<>();
-        attractions.addAll(gpsMicroService.getAttractions());
+        CopyOnWriteArrayList<AttractionRequest> attractions = new CopyOnWriteArrayList<>(gpsMicroService.getAttractions());
 
-        userLocations.stream().forEach(visitedLocation -> {
+        userLocations.forEach(visitedLocation -> {
             attractions.stream().filter(attractionRequest ->
                     distanceCalculator.isWithinAttractionProximity(attractionRequest, attractionRequest.getLocation()))
                     .forEach(attractionRequest -> {

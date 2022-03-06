@@ -7,6 +7,7 @@ import tourGuide.model.UserReward;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface RewardService {
 
@@ -14,6 +15,8 @@ public interface RewardService {
 
 
    void calculateRewards(User user);
+
+   public CompletableFuture<?> calculateRewardsWithCompletableFuture (User user);
 
    int getAttractionsRewardPoints(User user, AttractionRequest attraction);
 

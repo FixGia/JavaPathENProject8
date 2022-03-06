@@ -13,6 +13,7 @@ import tourGuide.model.VisitedLocation;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
 
 @Component
@@ -22,14 +23,15 @@ import java.util.stream.IntStream;
 @Setter
 public class InternalTestHelper {
 
-    private static int internalUserNumber = 100 ;
+    private static int internalUserNumber = 1000;
     private static final String TRIP_PRICER_API_KEY = "test-server-api-key";
-    private final Map<String, User> internalUserMap = new HashMap<>();
+    private final Map<String, User> internalUserMap = new ConcurrentHashMap<>();
 
 
     public void initializeInternalUsers() {
 
-        IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
+
+        IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i-> {
 
             String userName = "internalUser" + i;
             String phone = "000";
@@ -45,7 +47,11 @@ public class InternalTestHelper {
     }
 
     private static int getInternalUserNumber() {
-        return internalUserNumber;
+        return InternalTestHelper.internalUserNumber;
+    }
+
+    public static void setInternalUserNumber(int internalUserNumber) {
+        InternalTestHelper.internalUserNumber = internalUserNumber;
     }
 
     private void generateUserLocationHistory(User user) {
@@ -81,5 +87,6 @@ public class InternalTestHelper {
         return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 
     }
+
 
 }

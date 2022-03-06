@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
+import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
@@ -18,21 +20,22 @@ import java.util.Map;
 public class LocationController {
 
     private final LocationService gpsService;
+    private final GpsMicroService gpsMicroService;
     private final UserService userService;
 
-    public LocationController(LocationService gpsService, UserService userService) {
+    public LocationController(LocationService gpsService, GpsMicroService gpsMicroService, UserService userService) {
         this.gpsService = gpsService;
+        this.gpsMicroService = gpsMicroService;
         this.userService = userService;
     }
 
     @RequestMapping("/getLocation")
     public String getLocation(@RequestParam @Valid String userName) {
 
-        Location userLocation = gpsService.getUserLocation(userName);
-
-        return JsonStream.serialize(userLocation);
+       return JsonStream.serialize(gpsService.getUserLocation(userName));
 
     }
+
 
     @RequestMapping("/getAllUsersLocation")
     public String getAllUsersLocation(){
@@ -46,8 +49,9 @@ public class LocationController {
     public String getTrack(@RequestParam @Valid String userName) {
 
         User user = userService.getUser(userName);
-        gpsService.trackUserLocation(user);
-        return "Success" + gpsService.trackUserLocation(user);
+     //   gpsService.trackUserLocation(user);
+      //  return "Success" + gpsService.trackUserLocation(user);
+        return user.toString();
     }
 
     @GetMapping("/nearbyAttractions")

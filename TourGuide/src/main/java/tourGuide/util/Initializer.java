@@ -5,57 +5,54 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tourGuide.config.GpsMicroService;
 import tourGuide.service.LocationService;
+import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.util.Locale;
 
 
 @Service
 @Slf4j
+
 public class Initializer {
 
 
-    private boolean isTestMode ;
-    private boolean isPerformanceTest;
-    private InternalTestHelper internalTestHelper;
-    private Tracker tracker;
+
+    private final InternalTestHelper internalTestHelper;
+    private final LocationService locationService;
+    private final GpsMicroService gpsMicroService;
+    private final RewardService rewardService;
+    private final UserService userService;
+    public Tracker tracker;
 
 
-    public Initializer(InternalTestHelper internalTestHelper) {
+    public Initializer(InternalTestHelper internalTestHelper, LocationService locationService, GpsMicroService gpsMicroService, RewardService rewardService, UserService userService) {
         this.internalTestHelper = internalTestHelper;
+        this.locationService = locationService;
+        this.gpsMicroService = gpsMicroService;
+        this.rewardService = rewardService;
+        this.userService = userService;
     }
 
     @PostConstruct
     public void initialization() {
 
 
-       // if (isTestMode) {
 
-            log.info("TestMode enabled");
-
+        log.info("TestMode enabled");
             log.debug("Initializing users");
-
             internalTestHelper.initializeInternalUsers();
+            tracker = new Tracker(gpsMicroService, rewardService, userService);
 
             log.debug("Finished initializing users");
 
+            addShutDownHook();
 
         }
 
-        //  if (!isPerformanceTest) {
 
-        //    this.tracker = new Tracker(gpsService, userService);
-
-        //  log.info("## Tracker instance initiated");
-
-        // tracker.start();
-        // }
-
-        //  addShutDownHook();
-
-        //  }
- //   }
-    private void addShutDownHook() {
+        private void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> tracker.stopTracking()));
     }
 }

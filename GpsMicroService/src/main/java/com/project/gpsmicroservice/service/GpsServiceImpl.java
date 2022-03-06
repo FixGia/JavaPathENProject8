@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Service
@@ -20,10 +24,12 @@ public class GpsServiceImpl implements GpsService {
 
 private final GpsUtil gpsUtil;
 private final GpsMapper gpsMapper;
+private ExecutorService executorService = Executors.newFixedThreadPool(10000);
 
     public GpsServiceImpl(GpsUtil gpsUtil, GpsMapper gpsMapper) {
         this.gpsUtil = gpsUtil;
         this.gpsMapper = gpsMapper;
+
     }
 
 
@@ -32,14 +38,12 @@ private final GpsMapper gpsMapper;
      * @param userID the user id
      * @return the user's location
      */
-    public VisitedLocationRequest getUserLocation(final UUID userID) {
+    public VisitedLocationRequest submitUserLocation(final UUID userID) throws ExecutionException, InterruptedException {
 
         if (userID == null) {
             throw new DataNotFoundException ("UserID wasn't found");
         }
-        VisitedLocation visitedLocation = gpsUtil
-                .getUserLocation(userID);
-
+      CompletableFuture<VisitedLocation> visitedLocation =  CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(userID), executorService);
         log.info("Get Location's User with UUID {} was a success", userID);
         return gpsMapper.mapVisitedLocationToVisitedLocationRequest(visitedLocation) ;
     }

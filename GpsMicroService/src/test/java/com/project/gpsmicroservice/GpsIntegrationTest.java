@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +41,7 @@ public class GpsIntegrationTest {
             +" when Get UserLocation,"+
             " return User expected location match with VisitedLocationRequest")
     @Test
-    public void testGetUserLocation() {
+    public void testGetUserLocation() throws ExecutionException, InterruptedException {
 
 
         VisitedLocationRequest requestResult = gpsService.getUserLocation(userId);

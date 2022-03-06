@@ -96,7 +96,7 @@ public class LocationServiceTest {
 
         lenient().when(gpsMicroService.getLocation(any(UUID.class))).thenReturn(visitedLocationRequest);
 
-        Location result = locationService.getUserLocation(userTest1.getUserName());
+       Location result = locationService.getUserLocation(userTest1.getUserName());
 
         assertEquals(1, userTest1.getVisitedLocations().size());
         assertEquals(anOtherVisitedLocation.getLocation(), result);
@@ -122,7 +122,7 @@ public class LocationServiceTest {
 
 
         // WHEN
-        locationService.trackUserLocation(userTest1).join();
+        //locationService.trackUserLocation(userTest1).join();
         verify(rewardService, times(1)).calculateRewards(userTest1);
         assertNull(userTest1.getUserRewards());
         verify(gpsMicroService, times(1)).getLocation(userTest1.getUserId());

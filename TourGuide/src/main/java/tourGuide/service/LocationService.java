@@ -12,9 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface LocationService {
 
-    Location getUserLocation(String userName);
-
-    CompletableFuture<?> trackUserLocation(User user);
+    Location getUserLocation(String username);
 
     Map<String, Location> getCurrentLocationForAllUsers();
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/gps")
@@ -23,10 +24,10 @@ public class GpsController {
     }
 
     @GetMapping("/userLocation/{userID}")
-    public VisitedLocationRequest getLocation(@PathVariable("userID") final UUID userId) {
+    public VisitedLocationRequest getLocation(@PathVariable("userID") final UUID userId) throws ExecutionException, InterruptedException {
 
 
-        VisitedLocationRequest userLocation = gpsService.getUserLocation(userId);
+        VisitedLocationRequest userLocation = gpsService.submitUserLocation(userId);
 
         if (userLocation == null) {
             throw  new DataNotFoundException("Fail to get userLocation");

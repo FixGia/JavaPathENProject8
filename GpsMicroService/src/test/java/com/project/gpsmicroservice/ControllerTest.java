@@ -5,7 +5,7 @@ import com.project.gpsmicroservice.Dto.VisitedLocationRequest;
 import com.project.gpsmicroservice.controller.GpsController;
 import com.project.gpsmicroservice.model.Location;
 import com.project.gpsmicroservice.service.GpsService;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

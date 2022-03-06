@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,13 +79,13 @@ public class UnitTestService {
             +" when GetUserLocation,"+
             " return User expected location match with VisitedLocationRequest")
     @Test
-    public void TestGetUserLocation(){
+    public void TestGetUserLocation() throws ExecutionException, InterruptedException {
 
         VisitedLocationRequest visitedLocationRequest = new VisitedLocationRequest(userID,location2,new Date());
 
         lenient().when( gpsUtil.getUserLocation(any(UUID.class))).thenReturn(visitedLocation);
 
-        lenient().when( gpsMapper.mapVisitedLocationToVisitedLocationRequest(any(VisitedLocation.class))).thenReturn(visitedLocationRequest);
+        lenient().when( gpsMapper.mapVisitedLocationToVisitedLocationRequest(any(CompletableFuture.class))).thenReturn(visitedLocationRequest);
 
         VisitedLocationRequest resultVisitedLocation = gpsService.getUserLocation(userID);
 
