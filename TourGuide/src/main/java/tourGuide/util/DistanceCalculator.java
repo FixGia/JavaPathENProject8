@@ -6,29 +6,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import tourGuide.Dto.AttractionRequest;
-import tourGuide.model.Location;
-import tourGuide.model.VisitedLocation;
+import tourGuide.model.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Service
 public class DistanceCalculator {
 
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
-    private int defaultProximityBuffer = 10;
-    private int proximityBuffer = defaultProximityBuffer;
-    private int attractionProximityRange = 200;
 
 
-    public boolean isWithinAttractionProximity(AttractionRequest attraction, Location location) {
-        return !(getDistanceInMiles(attraction.getLocation(), location) > attractionProximityRange);
-    }
 
-    public boolean nearAttraction(Location userLocation, Location attractionLocation) {
-        return !(getDistanceInMiles(attractionLocation, userLocation) > proximityBuffer);
-    }
 
     public double getDistanceInMiles(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);

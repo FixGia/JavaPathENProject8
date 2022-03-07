@@ -44,6 +44,7 @@ public class User {
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
 
 		visitedLocations.add(visitedLocation);
+
 	}
 
 	/** Get last visited Location

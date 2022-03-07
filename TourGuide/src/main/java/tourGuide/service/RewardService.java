@@ -4,6 +4,7 @@ import tourGuide.Dto.AttractionRequest;
 import tourGuide.model.Attraction;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
+import tourGuide.model.VisitedLocation;
 
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,9 @@ public interface RewardService {
 
    void calculateRewards(User user);
 
-   public CompletableFuture<?> calculateRewardsWithCompletableFuture (User user);
+   public void getAttractionsRewardPoints(User user, AttractionRequest attraction, UserReward userReward);
 
-   int getAttractionsRewardPoints(User user, AttractionRequest attraction);
+   public int getAttractionRewardPoints(User user, AttractionRequest attraction);
 
+   public CompletableFuture<?> calculateRewardAsync(final User user );
 }

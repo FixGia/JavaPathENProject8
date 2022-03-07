@@ -3,7 +3,7 @@ package tourGuide.IntegrationTest;
 import org.apache.commons.lang3.time.StopWatch;
 
 
-
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tourGuide.Dto.AttractionRequest;
 import tourGuide.config.GpsMicroService;
+import tourGuide.model.Attraction;
 import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.RewardService;
@@ -118,28 +120,32 @@ public class TestPerformance {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		AttractionRequest attractionRequest = gpsMicroService.getAttractions().get(0);
+		Attraction attraction = new Attraction(attractionRequest.getAttractionName(),attractionRequest.getCity(),attractionRequest.getState(),attractionRequest.getLocation(),attractionRequest.getAttractionId());
 		List<User> allUsers = userService.getAllUsers();
 		System.out.println(allUsers.size());
+
 
 		allUsers.forEach(user -> {
 			user.clearVisitedLocations();
 			user.getUserRewards().clear();
-			user.addToVisitedLocations(
-					new VisitedLocation(
-							user.getUserId(),
-							attractionRequest.getLocation(),
-							new Date()));
+			VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), attractionRequest.getLocation(), new Date());
+			user.addToVisitedLocations(visitedLocation);
+			user.addUserReward(new UserReward(visitedLocation,attraction,200));
 		});
 
 
-		CompletableFuture<?>[] futures = allUsers.stream().map(rewardService::calculateRewardsWithCompletableFuture).toArray(CompletableFuture[]::new);
+		CompletableFuture<?>[] futures = allUsers.parallelStream()
+				.map(rewardService::calculateRewardAsync)
+				.toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(futures).join();
+
+		for(User user : allUsers) {
+			assertTrue(user.getUserRewards().size() > 0);
+		}
 
 		stopWatch.stop();
 
-		for(User user : allUsers) {
-			assertTrue(user.getUserRewards().size()>0);
-		}
+
 
 
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");

@@ -13,6 +13,7 @@ import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 import tourGuide.util.DistanceCalculator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +29,7 @@ public class RewardServiceImpl implements RewardService {
     private final RewardMicroService rewardMicroService;
     private final DistanceCalculator distanceCalculator;
     private final GpsMicroService gpsMicroService;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1000);
+    ExecutorService executorService = Executors.newFixedThreadPool(1000);
 
 
     public RewardServiceImpl(UserService userService, RewardMicroService rewardMicroService, DistanceCalculator distanceCalculator, GpsMicroService gpsMicroService) {
@@ -53,43 +54,67 @@ public class RewardServiceImpl implements RewardService {
 
     }
 
-    public int getAttractionsRewardPoints(User user, AttractionRequest attraction) {
-
-        return rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId());
+    public void getAttractionsRewardPoints(User user, AttractionRequest attraction, UserReward userReward) {
 
 
-    }
+        CompletableFuture.supplyAsync(() ->
+                        rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId()), executorService)
+                .thenAccept(points -> {
+                    userReward.setRewardPoints(points);
+                    user.addUserReward(userReward);
+                });
 
-    public UserReward getRewardsPoint(final User user, VisitedLocation visitedLocation, AttractionRequest attraction) {
-
-        return new UserReward(
-                visitedLocation,
-                new Attraction(attraction.getAttractionName(), attraction.getCity(), attraction.getState(),attraction.getLocation(),attraction.getAttractionId()),
-                rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId()));
 
     }
 
-    public CompletableFuture<?> calculateRewardsWithCompletableFuture (User user) {
+    public int getAttractionRewardPoints(User user, AttractionRequest attraction) {
 
-        return CompletableFuture.runAsync(() -> calculateRewards(user),
-                executorService);
+       return rewardMicroService.getRewardPoint(attraction.getAttractionId(),user.getUserId());
+
     }
+    private void getRewardsPointWithDistance(final User user, VisitedLocation visitedLocation, AttractionRequest attraction) {
+
+       double distance = distanceCalculator.getDistanceInMiles(attraction.getLocation(), visitedLocation.getLocation());
+       int proximityBufferMiles = 10;
+
+       if(distance <= proximityBufferMiles) {
+            UserReward userReward = new UserReward(
+                    visitedLocation,
+                    new Attraction(attraction.getAttractionName(), attraction.getCity(), attraction.getState(), attraction.getLocation(), attraction.getAttractionId()), (int) distance);
+            getAttractionsRewardPoints(user, attraction, userReward);
+
+        }
+
+    }
+
+
+
     public void calculateRewards(User user) {
 
 
-        CopyOnWriteArrayList<VisitedLocation> userLocations = new CopyOnWriteArrayList<>(user.getVisitedLocations());
+        CopyOnWriteArrayList<VisitedLocation> visitedLocationsList = new CopyOnWriteArrayList<>(new ArrayList<>(user.getVisitedLocations()));
 
         CopyOnWriteArrayList<AttractionRequest> attractions = new CopyOnWriteArrayList<>(gpsMicroService.getAttractions());
 
-        userLocations.forEach(visitedLocation -> {
-            attractions.stream().filter(attractionRequest ->
-                    distanceCalculator.isWithinAttractionProximity(attractionRequest, attractionRequest.getLocation()))
-                    .forEach(attractionRequest -> {
-                        user.addUserReward(getRewardsPoint(user,visitedLocation,attractionRequest)
-                        );
-                    } );
-        });
+        for(VisitedLocation visitedLocation : visitedLocationsList) {
+            for(AttractionRequest attraction : attractions) {
+                if(user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(attraction.getAttractionName()))) {
+                  getRewardsPointWithDistance(user,visitedLocation,attraction);
 
-                    }
+
                 }
+            }
+        }
+
+    }
+
+
+    public CompletableFuture<?> calculateRewardAsync(final User user ){
+
+        return CompletableFuture.runAsync(() -> {
+            this.calculateRewards(user);
+        }, executorService);
+    }
+
+}
 

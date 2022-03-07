@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import rewardCentral.RewardCentral;
 
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 public class RewardMSModule {
@@ -25,6 +27,11 @@ public class RewardMSModule {
 
         logger.info(" RewardCentral has been called");
         return new RewardCentral();
+    }
+
+    @Bean
+    public ExecutorService getExecutorService() {
+        return Executors.newFixedThreadPool(1000);
     }
 
 }

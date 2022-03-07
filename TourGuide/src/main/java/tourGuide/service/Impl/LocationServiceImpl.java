@@ -10,6 +10,7 @@ import tourGuide.Dto.VisitedLocationRequest;
 import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.RewardService;
@@ -76,6 +77,7 @@ public class LocationServiceImpl implements LocationService {
                         rewardService.calculateRewards(user);
                     });
 
+
                     return visitedLocation;
 
                 },
@@ -135,7 +137,10 @@ public class LocationServiceImpl implements LocationService {
         User user = userService.getUser(userName);
        Location userLocation = user.getLastVisitedLocation().getLocation();
         List<AttractionRequest> attractions = microServiceGps.getAttractions();
+
         List<NearAttraction> nearAttractions = new ArrayList<>();
+
+
 
 
         Map<AttractionRequest, Double> nearFiveAttractions = GetNearFiveAttractions(getAttractionsMaps(userLocation, attractions));
@@ -146,7 +151,7 @@ public class LocationServiceImpl implements LocationService {
                         .add(new NearAttraction(a.getKey().getAttractionName(),
                                 a.getKey().getLocation(),
                                 a.getValue().intValue(),
-                                rewardService.getAttractionsRewardPoints(user,a.getKey()))));
+                                rewardService.getAttractionRewardPoints(user,a.getKey()))));
 
         return new AttractionRecommendationRequest(userLocation, nearAttractions);
     }

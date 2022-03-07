@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import rewardCentral.RewardCentral;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,7 +37,7 @@ public class UnitTestService {
     + "when GetRewardsPoint" +
     "return RewardsPoints")
     @Test
-    public void GetRewardsPointTest(){
+    public void GetRewardsPointTest() throws ExecutionException, InterruptedException {
 
         UUID userID = UUID.randomUUID();
         UUID attractionID = UUID.randomUUID();
