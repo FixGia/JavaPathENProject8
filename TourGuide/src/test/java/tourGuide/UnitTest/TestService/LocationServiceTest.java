@@ -1,7 +1,6 @@
 package tourGuide.UnitTest.TestService;
 
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -107,7 +106,7 @@ public class LocationServiceTest {
     public void GetCurrentLocationForAllUsersTest(){
 
 
-      Map<String, Location> resultMap = locationService.getCurrentLocationForAllUsers();
+      Map<String, Location> resultMap = locationService.getLastLocationForAllUsers();
       verify(userService, times(1)).getAllUsers();
       assertNotNull(resultMap);
 
@@ -122,8 +121,8 @@ public class LocationServiceTest {
 
 
         // WHEN
-        //locationService.trackUserLocation(userTest1).join();
-        verify(rewardService, times(1)).calculateRewards(userTest1);
+        locationService.trackUserLocation(userTest1).join();
+        verify(rewardService, times(1)).calculateRewardAsync(userTest1);
         assertNull(userTest1.getUserRewards());
         verify(gpsMicroService, times(1)).getLocation(userTest1.getUserId());
     }

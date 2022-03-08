@@ -87,7 +87,7 @@ public class UnitTestService {
 
         lenient().when( gpsMapper.mapVisitedLocationToVisitedLocationRequest(any(CompletableFuture.class))).thenReturn(visitedLocationRequest);
 
-        VisitedLocationRequest resultVisitedLocation = gpsService.getUserLocation(userID);
+        VisitedLocationRequest resultVisitedLocation = gpsService.submitUserLocation(userID);
 
         assertNotNull(resultVisitedLocation);
         assertEquals(visitedLocationRequest, resultVisitedLocation);
@@ -101,7 +101,7 @@ public class UnitTestService {
     public void TestGetUserLocationButUserNotFound(){
 
         assertThrows(DataNotFoundException.class, ()
-                -> gpsService.getUserLocation(null));
+                -> gpsService.submitUserLocation(null));
     }
 
     @DisplayName("Check Method = GetAttractions"

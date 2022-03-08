@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import tourGuide.Dto.ProviderRequest;
 import tourGuide.model.Provider;
 
 
@@ -7,6 +8,6 @@ import java.util.List;
 
 public interface TripDealService {
 
-  List<Provider> getTripDeals(String userName);
+  List<ProviderRequest> getTripDeals(String userName);
 
 }

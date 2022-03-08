@@ -8,6 +8,7 @@ import com.project.gpsmicroservice.service.GpsService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class ControllerTest {
         UUID userID = UUID.fromString("c8615b95-05d0-44aa-952a-531c91215967");
 
         VisitedLocationRequest visitedLocationRequest = new VisitedLocationRequest(userID, new Location(33.817595, -117.922008), new Date());
-        lenient().when(gpsService.getUserLocation(userID)).thenReturn(visitedLocationRequest);
+        lenient().when(gpsService.submitUserLocation(userID)).thenReturn(visitedLocationRequest);
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/gps/userLocation/"+userID).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();

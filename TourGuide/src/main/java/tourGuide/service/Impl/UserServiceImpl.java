@@ -63,12 +63,13 @@ public class UserServiceImpl implements UserService {
             UserPreferences userPreferences = userToGet.getUserPreferences();
 
             userPreferences.setAttractionProximity(userPreferencesRequest.getAttractionProximity());
+            userPreferences.setLowerPricePoint(userPreferencesRequest.getLowerPricePoint());
+            userPreferences.setHighPricePoint(userPreferencesRequest.getHighPricePoint());
             userPreferences.setTripDuration(userPreferencesRequest.getTripDuration());
             userPreferences.setTicketQuantity(userPreferencesRequest.getTicketQuantity());
             userPreferences.setNumberOfAdults(userPreferencesRequest.getNumberOfAdults());
             userPreferences.setNumberOfChildren(userPreferencesRequest.getNumberOfChildren());
-            userPreferences.setLowerPricePoint(Money.of(userPreferencesRequest.getLowerPrincePoint(), userPreferences.getCurrency()));
-            userPreferences.setHighPricePoint(Money.of(userPreferencesRequest.getHighPricePoint(), userPreferences.getCurrency()));
+
 
             log.info("User Preferences was updated");
             return userPreferences;

@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import org.javamoney.moneta.Money;
 import tourGuide.constant.Constraints;
 
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 import javax.validation.constraints.Min;
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +19,15 @@ public class UserPreferencesRequest {
     @Min(value = Constraints.PROXIMITY_LOWER_LIMIT,
             message = "Valid value required")
     private int attractionProximity;
+
+
+    @Min(value = Constraints.LOWER_PRICE_POINT_VALUE,
+            message = "Valid value required")
+    private BigDecimal lowerPricePoint;
+
+    @Min(value = Constraints.HIGH_PRICE_POINT_VALUE,
+            message = "Valid value required")
+    private BigDecimal highPricePoint;
 
     @Min(value = Constraints.TRIP_DURATION_MIN_VALUE,
             message = "Minimum value should be 1")
@@ -32,14 +44,6 @@ public class UserPreferencesRequest {
     @Min(value = Constraints.CHILD_NUMBER_MIN_VALUE,
             message = "Valid value required")
     private int numberOfChildren;
-
-    @Min(value = Constraints.LOWER_PRICE_POINT_VALUE,
-            message = "Valid value required")
-    private int lowerPrincePoint;
-
-    @Min(value = Constraints.HIGH_PRICE_POINT_VALUE,
-            message = "Valid value required")
-    private int highPricePoint;
 
 
 }

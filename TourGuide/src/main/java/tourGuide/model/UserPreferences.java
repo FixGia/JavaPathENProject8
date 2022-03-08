@@ -7,6 +7,7 @@ import tourGuide.Dto.UserPreferencesRequest;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import java.math.BigDecimal;
 
 
 @Data
@@ -17,9 +18,9 @@ public class UserPreferences {
 
 	private CurrencyUnit currency = Monetary.getCurrency("USD");
 
-	private Money lowerPricePoint = Money.of(0, currency);
+	private BigDecimal lowerPricePoint = BigDecimal.valueOf(0);
 
-	private Money highPricePoint = Money.of(Integer.MAX_VALUE, currency);
+	private BigDecimal highPricePoint = BigDecimal.valueOf(Integer.MAX_VALUE);
 
 	private int tripDuration = 1;
 
@@ -32,7 +33,6 @@ public class UserPreferences {
 	/** Instantiate a new user preferences
 	 *
 	 * @param attractionProximity
-	 * @param currency
 	 * @param lowerPricePoint
 	 * @param highPricePoint
 	 * @param tripDuration
@@ -42,16 +42,14 @@ public class UserPreferences {
 	 *
 	 */
 	public UserPreferences(int attractionProximity,
-						   CurrencyUnit currency,
-						   Money lowerPricePoint,
-						   Money highPricePoint,
+						   BigDecimal lowerPricePoint,
+						   BigDecimal highPricePoint,
 						   int tripDuration,
 						   int ticketQuantity,
 						   int numberOfAdults,
 						   int numberOfChildren) {
 
 		this.attractionProximity = attractionProximity;
-		this.currency = currency;
 		this.lowerPricePoint = lowerPricePoint;
 		this.highPricePoint = highPricePoint;
 		this.tripDuration = tripDuration;

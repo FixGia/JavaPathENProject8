@@ -8,6 +8,7 @@ import tourGuide.config.Mapper;
 import tourGuide.config.TripDealMicroService;
 import tourGuide.model.Provider;
 import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.service.TripDealService;
 import tourGuide.service.UserService;
 
@@ -22,21 +23,19 @@ public class TripDealServiceImpl implements TripDealService {
     private final TripDealMicroService tripDealMicroService;
     private final UserService userService;
     private static final String TRIP_PRICER_API_KEY = "test-server-api-key";
-    private final Mapper mapper;
+
 
     public TripDealServiceImpl(TripDealMicroService tripDealMicroService, UserService userService, Mapper modelMapper) {
         this.tripDealMicroService = tripDealMicroService;
         this.userService = userService;
-
-        this.mapper = modelMapper;
     }
 
-    public List<Provider> getTripDeals(String userName) {
+    public List<ProviderRequest> getTripDeals(String userName) {
 
         User user = userService.getUser(userName);
 
         if (user != null) {
-        int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+        int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(UserReward::getRewardPoints).sum();
         List<ProviderRequest> providers = tripDealMicroService.getProviders(TRIP_PRICER_API_KEY,
                 user.getUserId(),
                 user.getUserPreferences().getNumberOfAdults(),
@@ -45,13 +44,12 @@ public class TripDealServiceImpl implements TripDealService {
                 cumulativeRewardPoints);
         List<Provider> providerList = new ArrayList<>();
         for(ProviderRequest providerRequest : providers) {
-            mapper.modelMapper().map(providerRequest, Provider.class);
-            providerList.add(mapper.modelMapper().map(providerRequest, Provider.class));
+            providerList.add(new Provider(providerRequest.getName(),providerRequest.getPrice(),providerRequest.getTripId()));
         }
         user.setTripDeals(providerList);
 
         log.info("TripDeals for user : {} : {}", userName, user.getTripDeals());
-        return providerList;
+        return providers;
     }
         log.error("providersList wasn't displayed because user wasn't exist");
         return Collections.emptyList();

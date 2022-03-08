@@ -19,12 +19,13 @@ import tourGuide.service.UserService;
 import tourGuide.util.DistanceCalculator;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.*;
 
 @DisplayName("## RewardServiceTest from TourGuide - Unit Test")
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +34,8 @@ public class RewardServiceTest {
 
 
     @InjectMocks
-    RewardServiceImpl rewardService;
+    RewardServiceImpl rewardServiceImpl;
+
 
     @Mock
     RewardMicroService rewardMicroService;
@@ -43,6 +45,7 @@ public class RewardServiceTest {
 
     @Mock
     GpsMicroService gpsMicroService;
+
     @Mock
     UserService userService;
 
@@ -59,7 +62,7 @@ public class RewardServiceTest {
     public void setUp() {
 
         userTest1 = new User(UUID.randomUUID(), "testUser1", "000", "testUser1@gmail.com");
-        userTest1.addToVisitedLocations(visitedLocation);
+
 
         attraction = new Attraction("attractionName",
                 "City",
@@ -75,11 +78,14 @@ public class RewardServiceTest {
                 location,
                 new Date());
 
+        userTest1.addToVisitedLocations(visitedLocation);
+
         attractionRequest = new AttractionRequest("attractionName",
                 "City",
                 "state",
                 attraction.getAttractionId(),
                 new Location(45.454545,56.565656));
+
 
         attractions = new CopyOnWriteArrayList<>();
         attractions.add(attractionRequest);
@@ -88,12 +94,11 @@ public class RewardServiceTest {
     }
 
 
-
     @Test
     public void TestGetUserRewards() {
 
         lenient().when(userService.getUser(any(String.class))).thenReturn(userTest1);
-        List<UserReward> userRewardList = rewardService.getUserRewards("userTest1");
+        List<UserReward> userRewardList = rewardServiceImpl.getUserRewards("userTest1");
         Assertions.assertNotNull(userRewardList);
 
     }
@@ -104,30 +109,40 @@ public class RewardServiceTest {
         lenient().when(rewardMicroService.getRewardPoint(attraction.getAttractionId(),userTest1.getUserId())).thenReturn(500);
         AttractionRequest attractionRequest = new AttractionRequest();
         attractionRequest.setAttractionId(attraction.getAttractionId());
-        int result = rewardService.getAttractionRewardPoints(userTest1, attractionRequest);
+        int result = rewardServiceImpl.getAttractionRewardPoints(userTest1, attractionRequest);
         assertEquals(500, result);
 
     }
 
+
+
     @Test
-    public void TestGetRewardsPoint(){
+    public void TestCalculateRewards() throws InterruptedException {
 
-        lenient().when(rewardMicroService.getRewardPoint(attraction.getAttractionId(),userTest1.getUserId())).thenReturn(500);
-      //  UserReward resultReward = rewardService.getRewardsPoint(userTest1,visitedLocation,attractionRequest);
 
-      //  assertNotNull(resultReward);
-    //    assertEquals(500,resultReward.getRewardPoints());
+       lenient().when(gpsMicroService.getAttractions()).thenReturn(attractions);
+       lenient().when(rewardMicroService.getRewardPoint(UUID.randomUUID(),UUID.randomUUID())).thenReturn(500);
+       rewardServiceImpl.calculateRewardAsync(userTest1);
+       Thread.sleep(100);
+       assertEquals("attractionName",userTest1.getUserRewards().get(0).getAttraction().getAttractionName());
 
     }
 
-
     @Test
-    public void TestCalculateRewards(){
+    public void TestCalculateRewardsButAttractionAlreadyGiveRewardPoints() throws InterruptedException {
+
         lenient().when(gpsMicroService.getAttractions()).thenReturn(attractions);
-      //  lenient().when(distanceCalculator.isWithinAttractionProximity(attractionRequest,location)).thenReturn(true);
-        rewardService.calculateRewards(userTest1);
-        assertNotNull(userTest1.getUserRewards());
-
+        rewardServiceImpl.calculateRewardAsync(userTest1);
+        Thread.sleep(100);
+        assertEquals(1, userTest1.getUserRewards().size());
+        assertEquals("attractionName",userTest1.getUserRewards().get(0).getAttraction().getAttractionName());
+        rewardServiceImpl.calculateRewardAsync(userTest1);
+        Thread.sleep(100);
+        assertEquals(1, userTest1.getUserRewards().size());
     }
+
+
+
+
 
 }

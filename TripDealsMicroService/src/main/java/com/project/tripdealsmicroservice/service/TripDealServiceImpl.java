@@ -23,7 +23,7 @@ public class TripDealServiceImpl implements TripDealService {
 
     @Override
     public List<ProviderRequest> getProviders(final String apiKey,
-                                       final UUID userId,
+                                        UUID userId,
                                        int adults,
                                        int children,
                                        int nightsStay,

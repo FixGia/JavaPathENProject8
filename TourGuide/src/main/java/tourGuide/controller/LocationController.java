@@ -2,6 +2,8 @@ package tourGuide.controller;
 
 
 import com.jsoniter.output.JsonStream;
+import feign.FeignException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,12 +21,12 @@ import java.util.Map;
 @RestController
 public class LocationController {
 
-    private final LocationService gpsService;
+    private final LocationService locationService;
     private final GpsMicroService gpsMicroService;
     private final UserService userService;
 
-    public LocationController(LocationService gpsService, GpsMicroService gpsMicroService, UserService userService) {
-        this.gpsService = gpsService;
+    public LocationController(LocationService locationService, GpsMicroService gpsMicroService, UserService userService) {
+        this.locationService=locationService;
         this.gpsMicroService = gpsMicroService;
         this.userService = userService;
     }
@@ -32,7 +34,8 @@ public class LocationController {
     @RequestMapping("/getLocation")
     public String getLocation(@RequestParam @Valid String userName) {
 
-       return JsonStream.serialize(gpsService.getUserLocation(userName));
+
+       return JsonStream.serialize(locationService.getUserLocation(userName));
 
     }
 
@@ -40,25 +43,19 @@ public class LocationController {
     @RequestMapping("/getAllUsersLocation")
     public String getAllUsersLocation(){
 
-        Map<String, Location> allUsersLocation = gpsService.getCurrentLocationForAllUsers();
-
+        Map<String, Location> allUsersLocation = locationService.getLastLocationForAllUsers();
         return JsonStream.serialize(allUsersLocation);
+
     }
 
-    @RequestMapping("/track")
-    public String getTrack(@RequestParam @Valid String userName) {
 
-        User user = userService.getUser(userName);
-     //   gpsService.trackUserLocation(user);
-      //  return "Success" + gpsService.trackUserLocation(user);
-        return user.toString();
-    }
+
 
     @GetMapping("/nearbyAttractions")
     public String getNearbyAttractions(@RequestParam @Valid String userName) {
 
 
-        return JsonStream.serialize(gpsService.AttractionRecommendedForUser(userName));
+        return JsonStream.serialize(locationService.AttractionRecommendedForUser(userName));
 
     }
 }

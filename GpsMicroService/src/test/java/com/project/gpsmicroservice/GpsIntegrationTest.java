@@ -44,7 +44,7 @@ public class GpsIntegrationTest {
     public void testGetUserLocation() throws ExecutionException, InterruptedException {
 
 
-        VisitedLocationRequest requestResult = gpsService.getUserLocation(userId);
+        VisitedLocationRequest requestResult = gpsService.submitUserLocation(userId);
 
         assertNotNull(requestResult);
 
@@ -57,7 +57,7 @@ public class GpsIntegrationTest {
     @Test
     public void testGetUserLocationUserIdNullValue() {
         assertThrows(DataNotFoundException.class, ()
-                -> gpsService.getUserLocation(null));
+                -> gpsService.submitUserLocation(null));
     }
 
 

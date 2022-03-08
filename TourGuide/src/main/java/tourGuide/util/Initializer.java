@@ -9,7 +9,6 @@ import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.Locale;
 
 
 @Service
@@ -21,17 +20,16 @@ public class Initializer {
 
     private final InternalTestHelper internalTestHelper;
 
-    private final GpsMicroService gpsMicroService;
-    private final RewardService rewardService;
+    private final LocationService locationService;
     private final UserService userService;
     public Tracker tracker;
 
 
-    public Initializer(InternalTestHelper internalTestHelper, GpsMicroService gpsMicroService, RewardService rewardService, UserService userService) {
+    public Initializer(InternalTestHelper internalTestHelper, LocationService locationService, UserService userService) {
         this.internalTestHelper = internalTestHelper;
+        this.locationService = locationService;
 
-        this.gpsMicroService = gpsMicroService;
-        this.rewardService = rewardService;
+
         this.userService = userService;
     }
 
@@ -43,7 +41,10 @@ public class Initializer {
         log.info("TestMode enabled");
             log.debug("Initializing users");
             internalTestHelper.initializeInternalUsers();
-            tracker = new Tracker(gpsMicroService, rewardService, userService);
+
+            tracker = new Tracker(locationService, userService);
+
+            tracker.startTracking();
 
             log.debug("Finished initializing users");
 

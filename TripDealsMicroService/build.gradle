@@ -1,12 +1,38 @@
-plugins {
-    id 'org.springframework.boot' version '2.6.3'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
+buildscript {
+    repositories {
+        // Maven Central for resolving dependencies
+        mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+    }
 }
+
+plugins {
+    // Apply the java-library plugin for API and implementation separation
+    id 'java-library'
+    id 'maven-publish'
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: "jacoco"
 
 group = 'com.project'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+bootWar {
+    baseName = 'TripDealMicroService'
+    version =  '1.0.0'
+}
 
 configurations {
     compileOnly {

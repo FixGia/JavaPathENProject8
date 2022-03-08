@@ -23,8 +23,8 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: "jacoco"
 
 
-bootJar {
-    baseName = 'tourGuide'
+bootWar {
+    baseName = 'TourGuide'
     version =  '1.0.0'
 }
 

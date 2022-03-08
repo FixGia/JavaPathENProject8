@@ -10,13 +10,11 @@ import tourGuide.Dto.VisitedLocationRequest;
 import tourGuide.config.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
-import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 import tourGuide.util.DistanceCalculator;
-import tourGuide.util.Tracker;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -73,10 +71,9 @@ public class LocationServiceImpl implements LocationService {
 
                     user.addToVisitedLocations(visitedLocationToAdd);
 
-                    CompletableFuture.runAsync(() -> {
-                        rewardService.calculateRewards(user);
+                   CompletableFuture.runAsync(() -> {
+                       rewardService.calculateRewardAsync(user);
                     });
-
 
                     return visitedLocation;
 
@@ -84,7 +81,7 @@ public class LocationServiceImpl implements LocationService {
                 executorService);
     }
 
-    public Map<String, Location> getCurrentLocationForAllUsers() {
+    public Map<String, Location> getLastLocationForAllUsers() {
 
         return Collections.unmodifiableMap(userService.getAllUsers()
                 .stream()

@@ -17,6 +17,8 @@ import tourGuide.model.User;
 import tourGuide.model.UserPreferences;
 import tourGuide.service.Impl.UserServiceImpl;
 import tourGuide.util.InternalTestHelper;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -125,7 +127,7 @@ public class UserServiceTest {
                 .thenReturn(internalUser);
 
         User user= userService.getUser("testUser1");
-        UserPreferencesRequest userPreferencesRequest = new UserPreferencesRequest(10,10,10,
+        UserPreferencesRequest userPreferencesRequest = new UserPreferencesRequest(10,new BigDecimal(10),new BigDecimal(10),
                 5,
                 5,
                 500,
@@ -133,7 +135,7 @@ public class UserServiceTest {
 
         userService.updateUserPreferences("testUser1", userPreferencesRequest);
         assertEquals(user.getUserPreferences().getAttractionProximity(), userPreferencesRequest.getAttractionProximity());
-        //TODO fix Money Problem
+
     }
 
 }

@@ -4,10 +4,13 @@ import com.jsoniter.output.JsonStream;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tourGuide.Dto.ProviderRequest;
 import tourGuide.model.Provider;
 import tourGuide.service.TripDealService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TripDealsController {
@@ -21,8 +24,11 @@ public class TripDealsController {
     @RequestMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
 
-        List<Provider> providers = tripDealService.getTripDeals(userName);
-        return JsonStream.serialize(providers);
+        List<ProviderRequest> providers = tripDealService.getTripDeals(userName);
+        Map<String, Double> providerMap=  new HashMap<>();
+        providers.forEach(providerRequest -> providerMap.put(providerRequest.getName(), providerRequest.getPrice()));
+
+        return JsonStream.serialize(providerMap);
 
     }
 

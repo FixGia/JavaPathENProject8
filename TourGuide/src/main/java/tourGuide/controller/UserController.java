@@ -2,9 +2,12 @@ package tourGuide.controller;
 
 import com.jsoniter.output.JsonStream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tourGuide.Dto.UserPreferencesRequest;
 import tourGuide.model.User;
+import tourGuide.model.UserPreferences;
 import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
@@ -38,9 +41,15 @@ public class UserController {
     }
 
     @PutMapping("/updateUserPreferences")
-    public String updateUserPreferences(@Valid @RequestBody final UserPreferencesRequest userPreferencesRequest, @RequestParam @NotNull final String userName){
+    public ResponseEntity<UserPreferences> updateUserPreferences( @RequestParam @NotNull final String userName, @Valid @RequestBody final UserPreferencesRequest userPreferencesRequest){
 
+        if (userName.length() == 0 ){
 
-        return JsonStream.serialize(userService.updateUserPreferences(userName,userPreferencesRequest));
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        }
+       UserPreferences userPreferences = userService.updateUserPreferences(userName,userPreferencesRequest);
+
+        return ResponseEntity.ok(userPreferences);
     }
 }

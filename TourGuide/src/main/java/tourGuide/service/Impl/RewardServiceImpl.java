@@ -54,7 +54,14 @@ public class RewardServiceImpl implements RewardService {
 
     }
 
-    public void getAttractionsRewardPoints(User user, AttractionRequest attraction, UserReward userReward) {
+    public int getAttractionRewardPoints(User user, AttractionRequest attraction) {
+
+       return rewardMicroService.getRewardPoint(attraction.getAttractionId(),user.getUserId());
+
+    }
+
+
+    public void getAttractionsRewardPointsAsyncAndAddUserRewardPoint(User user, AttractionRequest attraction, UserReward userReward) {
 
 
         CompletableFuture.supplyAsync(() ->
@@ -64,15 +71,9 @@ public class RewardServiceImpl implements RewardService {
                     user.addUserReward(userReward);
                 });
 
-
     }
 
-    public int getAttractionRewardPoints(User user, AttractionRequest attraction) {
-
-       return rewardMicroService.getRewardPoint(attraction.getAttractionId(),user.getUserId());
-
-    }
-    private void getRewardsPointWithDistance(final User user, VisitedLocation visitedLocation, AttractionRequest attraction) {
+    private void getRewardsPointAfterVerify(final User user, VisitedLocation visitedLocation, AttractionRequest attraction) {
 
        double distance = distanceCalculator.getDistanceInMiles(attraction.getLocation(), visitedLocation.getLocation());
        int proximityBufferMiles = 10;
@@ -81,16 +82,13 @@ public class RewardServiceImpl implements RewardService {
             UserReward userReward = new UserReward(
                     visitedLocation,
                     new Attraction(attraction.getAttractionName(), attraction.getCity(), attraction.getState(), attraction.getLocation(), attraction.getAttractionId()), (int) distance);
-            getAttractionsRewardPoints(user, attraction, userReward);
+            user.getUserRewards().add(userReward);
 
         }
 
     }
 
-
-
-    public void calculateRewards(User user) {
-
+    private void calculateRewards(User user) {
 
         CopyOnWriteArrayList<VisitedLocation> visitedLocationsList = new CopyOnWriteArrayList<>(new ArrayList<>(user.getVisitedLocations()));
 
@@ -99,8 +97,7 @@ public class RewardServiceImpl implements RewardService {
         for(VisitedLocation visitedLocation : visitedLocationsList) {
             for(AttractionRequest attraction : attractions) {
                 if(user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(attraction.getAttractionName()))) {
-                  getRewardsPointWithDistance(user,visitedLocation,attraction);
-
+                  getRewardsPointAfterVerify(user,visitedLocation,attraction);
 
                 }
             }
@@ -108,12 +105,8 @@ public class RewardServiceImpl implements RewardService {
 
     }
 
-
     public CompletableFuture<?> calculateRewardAsync(final User user ){
-
-        return CompletableFuture.runAsync(() -> {
-            this.calculateRewards(user);
-        }, executorService);
+        return CompletableFuture.runAsync(() -> this.calculateRewards(user), executorService);
     }
 
 }

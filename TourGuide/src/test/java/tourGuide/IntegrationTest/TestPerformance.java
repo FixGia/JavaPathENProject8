@@ -77,6 +77,8 @@ public class TestPerformance {
 	@Test
 	public void highVolumeTrackLocation() {
 
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 
 		List<User> allUsers = userService.getAllUsers();
 		System.out.println(allUsers.size());
@@ -86,13 +88,13 @@ public class TestPerformance {
 				.map(u -> u
 						.getVisitedLocations().size())
 				.collect(Collectors.toList());
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
+
 
 		CompletableFuture<?>[] futures = allUsers.parallelStream()
 				.map(locationService::trackUserLocation)
 				.toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(futures).join();
+
 		stopWatch.stop();
 
 		List<Integer> newVisitedLocationsCount = allUsers
@@ -120,22 +122,30 @@ public class TestPerformance {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		AttractionRequest attractionRequest = gpsMicroService.getAttractions().get(0);
-		Attraction attraction = new Attraction(attractionRequest.getAttractionName(),attractionRequest.getCity(),attractionRequest.getState(),attractionRequest.getLocation(),attractionRequest.getAttractionId());
 		List<User> allUsers = userService.getAllUsers();
 		System.out.println(allUsers.size());
 
+		allUsers.forEach(user -> {
+			user.clearVisitedLocations();
+			user.getUserRewards().clear();});
+
+		List<Integer> initialRewardCount = allUsers
+				.stream()
+				.map(u -> u
+						.getUserRewards().size())
+				.collect(Collectors.toList());
+		System.out.println(initialRewardCount.size());
 
 		allUsers.forEach(user -> {
 			user.clearVisitedLocations();
 			user.getUserRewards().clear();
 			VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), attractionRequest.getLocation(), new Date());
 			user.addToVisitedLocations(visitedLocation);
-			user.addUserReward(new UserReward(visitedLocation,attraction,200));
 		});
 
 
 		CompletableFuture<?>[] futures = allUsers.parallelStream()
-				.map(rewardService::calculateRewardAsync)
+				.map(rewardService :: calculateRewardAsync)
 				.toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(futures).join();
 
@@ -145,7 +155,16 @@ public class TestPerformance {
 
 		stopWatch.stop();
 
+		List<Integer> newRewardCount = allUsers
+				.parallelStream()
+				.map(u -> u
+						.getUserRewards().size())
+				.collect(Collectors.toList());
 
+
+		for (int i = 0; i < initialRewardCount.size(); i++) {
+			assertEquals(initialRewardCount.get(i) + 1, (int) newRewardCount.get(i));
+		}
 
 
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");

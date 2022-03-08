@@ -14,7 +14,7 @@ public interface LocationService {
 
     Location getUserLocation(String username);
 
-    Map<String, Location> getCurrentLocationForAllUsers();
+    Map<String, Location> getLastLocationForAllUsers();
 
     AttractionRecommendationRequest AttractionRecommendedForUser(String userName);
 
