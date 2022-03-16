@@ -61,3 +61,5 @@ To deploy all TourGuide Application, use the docker-compose.yml on the root pack
 
 * TourGuide http://localhost:8080/swagger-ui.html#/
 * GpsMicroService http://localhost:8081/swagger-ui.html#/
+* RewarMicroService http://localhost:8082/swagger-ui.html#/
+* TripDealMicroService http://localhost:8083/swagger-ui.html#/
