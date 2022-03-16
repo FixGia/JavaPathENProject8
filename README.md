@@ -46,6 +46,15 @@ To deploy all TourGuide Application, use the docker-compose.yml on the root pack
 * Case 2 : Open docker-compose.yml and ▶️ the docker-compose.
 
 # Test Report
+![rapport jacoco GpsMicroService](https://user-images.githubusercontent.com/79265943/158609523-51b968a9-90f4-46df-ae09-bff9080394c7.png)
+![rapport test GPSMS](https://user-images.githubusercontent.com/79265943/158609997-c88f804c-d719-4608-8957-679d19a52745.png)
+![rapport jacoco RewardMicroService](https://user-images.githubusercontent.com/79265943/158624232-5875c416-eb3f-4457-bb17-1f687d2c092a.png)
+![rapport test RMS](https://user-images.githubusercontent.com/79265943/158624261-047c406f-7806-4c46-adc3-a8d98da8c7b0.png)
+![rapport jacoco TripDealMS](https://user-images.githubusercontent.com/79265943/158624296-5482265d-030a-41ab-872a-d38b90ad0e6e.png)
+![rapport test TripDealMS](https://user-images.githubusercontent.com/79265943/158624320-0c42011f-0222-4735-9086-33acdfaad7e7.png)
+![rapport jacoco TourGuide](https://user-images.githubusercontent.com/79265943/158624355-54f0834b-55df-44ed-8d35-695722956c9e.png)
+![rapport Test TourGuide](https://user-images.githubusercontent.com/79265943/158624374-8178ba0a-e62b-444a-8a7c-510366d21419.png)
+
 
 
 # Documentation API
