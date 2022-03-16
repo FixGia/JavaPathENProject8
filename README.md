@@ -45,7 +45,8 @@ To deploy all TourGuide Application, use the docker-compose.yml on the root pack
 * Case 1 : SYNTAX = docker-compose up -d
 * Case 2 : Open docker-compose.yml and ▶️ the docker-compose.
 
-# Test Report
+# Test REPORT
+
 ![rapport jacoco GpsMicroService](https://user-images.githubusercontent.com/79265943/158609523-51b968a9-90f4-46df-ae09-bff9080394c7.png)
 ![rapport test GPSMS](https://user-images.githubusercontent.com/79265943/158609997-c88f804c-d719-4608-8957-679d19a52745.png)
 ![rapport jacoco RewardMicroService](https://user-images.githubusercontent.com/79265943/158624232-5875c416-eb3f-4457-bb17-1f687d2c092a.png)
@@ -54,6 +55,11 @@ To deploy all TourGuide Application, use the docker-compose.yml on the root pack
 ![rapport test TripDealMS](https://user-images.githubusercontent.com/79265943/158624320-0c42011f-0222-4735-9086-33acdfaad7e7.png)
 ![rapport jacoco TourGuide](https://user-images.githubusercontent.com/79265943/158624355-54f0834b-55df-44ed-8d35-695722956c9e.png)
 ![rapport Test TourGuide](https://user-images.githubusercontent.com/79265943/158624374-8178ba0a-e62b-444a-8a7c-510366d21419.png)
+
+# TEST PERFORMANCE
+
+![graph track location](https://user-images.githubusercontent.com/79265943/158655166-4aab7053-c0d2-468a-ab1c-874b20d6507d.png)
+![graph get rewards](https://user-images.githubusercontent.com/79265943/158655479-36bb766b-cf03-405d-9687-71f322409a36.png)
 
 
 
