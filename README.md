@@ -23,8 +23,10 @@
 
 2️⃣ Docker
 ----
-* je sais pas encore
-* je sais pas encore     
+To deploy all TourGuide Application, use the docker-compose.yml (link), it contain all MicroServices.
+
+* Case 1 : SYNTAX = docker-compose up -d
+* Case 2 : Open your IDE, Open docker-compose.yml and ::run:: the docker-compose.
 
 # Test Report
 
