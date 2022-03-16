@@ -40,7 +40,7 @@ TourGuide is composed of 4 microServices :
 
 2️⃣ Docker
 ----
-To deploy all TourGuide Application, use the docker-compose.yml present on the root package, it contain all MicroServices.
+To deploy all TourGuide Application, use the docker-compose.yml on the root package.
 
 * Case 1 : SYNTAX = docker-compose up -d
 * Case 2 : Open docker-compose.yml and ▶️ the docker-compose.
