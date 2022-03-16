@@ -61,17 +61,6 @@ public class RewardServiceImpl implements RewardService {
     }
 
 
-    public void getAttractionsRewardPointsAsyncAndAddUserRewardPoint(User user, AttractionRequest attraction, UserReward userReward) {
-
-
-        CompletableFuture.supplyAsync(() ->
-                        rewardMicroService.getRewardPoint(attraction.getAttractionId(), user.getUserId()), executorService)
-                .thenAccept(points -> {
-                    userReward.setRewardPoints(points);
-                    user.addUserReward(userReward);
-                });
-
-    }
 
     private void getRewardsPointAfterVerify(final User user, VisitedLocation visitedLocation, AttractionRequest attraction) {
 
@@ -90,7 +79,7 @@ public class RewardServiceImpl implements RewardService {
 
     private void calculateRewards(User user) {
 
-        CopyOnWriteArrayList<VisitedLocation> visitedLocationsList = new CopyOnWriteArrayList<>(new ArrayList<>(user.getVisitedLocations()));
+        CopyOnWriteArrayList<VisitedLocation> visitedLocationsList = new CopyOnWriteArrayList<>(user.getVisitedLocations());
 
         CopyOnWriteArrayList<AttractionRequest> attractions = new CopyOnWriteArrayList<>(gpsMicroService.getAttractions());
 

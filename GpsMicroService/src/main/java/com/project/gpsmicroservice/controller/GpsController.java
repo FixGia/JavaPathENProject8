@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class GpsController {
 
- private GpsService gpsService;
+ private final GpsService gpsService;
 
     public GpsController(GpsService gpsService) {
         this.gpsService = gpsService;

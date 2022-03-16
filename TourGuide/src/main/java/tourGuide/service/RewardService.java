@@ -11,7 +11,6 @@ public interface RewardService {
 
    List<UserReward> getUserRewards(String userName);
 
-   void getAttractionsRewardPointsAsyncAndAddUserRewardPoint(User user, AttractionRequest attraction, UserReward userReward);
 
    int getAttractionRewardPoints(User user, AttractionRequest attraction);
 

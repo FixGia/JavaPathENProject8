@@ -5,10 +5,12 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tourGuide.Dto.AttractionRequest;
 import tourGuide.config.GpsMicroService;
@@ -37,6 +39,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@TestPropertySource("/Test-mode.properties")
 public class TestPerformance {
 
 
@@ -46,12 +49,9 @@ public class TestPerformance {
 	LocationService locationService;
 	@Autowired
 	private RewardService rewardService;
-	@Autowired
-	Initializer initializer;
+
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private Tracker tracker;
 
 	/*
 	 * A note on performance improvements:
@@ -59,7 +59,6 @@ public class TestPerformance {
 	 *     The number of users generated for the high volume tests can be easily adjusted via this method:
 	 *
 	 *     		InternalTestHelper.setInternalUserNumber(100000);
-	 *
 	 *
 	 *     These tests can be modified to suit new solutions, just as long as the performance metrics
 	 *     at the end of the tests remains consistent.
@@ -74,14 +73,18 @@ public class TestPerformance {
 	 */
 
 
+
 	@Test
 	public void highVolumeTrackLocation() {
 
 		StopWatch stopWatch = new StopWatch();
+
 		stopWatch.start();
 
 		List<User> allUsers = userService.getAllUsers();
+		allUsers.forEach(User::clearVisitedLocations);
 		System.out.println(allUsers.size());
+
 
 		List<Integer> initialVisitedLocationsCount = allUsers
 				.stream()
@@ -120,7 +123,7 @@ public class TestPerformance {
 
 
 		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
+
 		AttractionRequest attractionRequest = gpsMicroService.getAttractions().get(0);
 		List<User> allUsers = userService.getAllUsers();
 		System.out.println(allUsers.size());
@@ -143,6 +146,7 @@ public class TestPerformance {
 			user.addToVisitedLocations(visitedLocation);
 		});
 
+		stopWatch.start();
 
 		CompletableFuture<?>[] futures = allUsers.parallelStream()
 				.map(rewardService :: calculateRewardAsync)

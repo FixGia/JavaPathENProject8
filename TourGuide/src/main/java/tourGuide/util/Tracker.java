@@ -67,15 +67,14 @@ public class Tracker extends Thread {
 				break;
 			}
 
+
+
 			List<User> users = userService.getAllUsers();
-
-			users.forEach(user -> completedTrackingMap.put(user,false));
-
 			log.debug("Begin Tracker. Tracking " + users.size() + " users.");
 
 			stopWatch.start();
-
-	//		users.forEach(this::trackUser);
+			users.forEach(user -> completedTrackingMap.put(user,false));
+			users.forEach(this::trackUser);
 
 			boolean notFinished = true;
 
@@ -91,8 +90,8 @@ public class Tracker extends Thread {
 					notFinished = false;
 				}
 			}
-			completedTrackingMap.clear();
 
+			completedTrackingMap.clear();
 			stopWatch.stop();
 			log.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 			stopWatch.reset();
@@ -116,6 +115,7 @@ public class Tracker extends Thread {
 	public void trackUser(User user) {
 
 		locationService.trackUserLocation(user);
+
 		finalizeTrack(user);
 
 	}

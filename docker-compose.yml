@@ -23,7 +23,7 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - gps-Microservice
+      - gps-microservice
     networks:
       - web-server-bridge
     restart: always
@@ -60,7 +60,7 @@ services:
       - web-server-bridge
     restart: always
     # restart: unless-stopped
-    # stdin_open: true
+    # standing_open: true
 
 networks:
   web-server-bridge:

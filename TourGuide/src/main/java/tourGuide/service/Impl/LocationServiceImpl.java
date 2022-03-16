@@ -68,9 +68,8 @@ public class LocationServiceImpl implements LocationService {
                             .getLocation(user.getUserId());
 
                     VisitedLocation visitedLocationToAdd = new VisitedLocation(visitedLocation.getUserId(),visitedLocation.getLocation(),visitedLocation.getTimeVisited());
-
+                    System.out.println("1");
                     user.addToVisitedLocations(visitedLocationToAdd);
-
                    CompletableFuture.runAsync(() -> {
                        rewardService.calculateRewardAsync(user);
                     });

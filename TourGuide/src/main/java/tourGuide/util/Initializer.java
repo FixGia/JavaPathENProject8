@@ -1,11 +1,10 @@
 package tourGuide.util;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import tourGuide.config.GpsMicroService;
 import tourGuide.service.LocationService;
-import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 
 import javax.annotation.PostConstruct;
@@ -13,7 +12,6 @@ import javax.annotation.PostConstruct;
 
 @Service
 @Slf4j
-
 public class Initializer {
 
 
@@ -22,7 +20,13 @@ public class Initializer {
 
     private final LocationService locationService;
     private final UserService userService;
+
+    @Value("${test.mode.enabled}")
+    private boolean TestMode;
+
     public Tracker tracker;
+
+
 
 
     public Initializer(InternalTestHelper internalTestHelper, LocationService locationService, UserService userService) {
@@ -37,21 +41,27 @@ public class Initializer {
     public void initialization() {
 
 
+        if(TestMode) {
 
-        log.info("TestMode enabled");
+            log.info("TestMode enabled");
+
             log.debug("Initializing users");
+
             internalTestHelper.initializeInternalUsers();
-
-            tracker = new Tracker(locationService, userService);
-
-            tracker.startTracking();
 
             log.debug("Finished initializing users");
 
             addShutDownHook();
 
-        }
+             } else
 
+             log.info("NormalMode enabled");
+
+        tracker = new Tracker(locationService,userService);
+        tracker.startTracking();
+
+             addShutDownHook();
+    }
 
     private void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> tracker.stopTracking()));
