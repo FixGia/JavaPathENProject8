@@ -5,11 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 
 import org.springframework.stereotype.Component;
-import tourGuide.config.GpsMicroService;
 import tourGuide.model.User;
 
 import tourGuide.service.LocationService;
-import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 
 import java.util.HashMap;

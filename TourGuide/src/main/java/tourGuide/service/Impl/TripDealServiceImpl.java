@@ -3,9 +3,7 @@ package tourGuide.service.Impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tourGuide.Dto.ProviderRequest;
-import tourGuide.Exception.DataNotFoundException;
-import tourGuide.config.Mapper;
-import tourGuide.config.TripDealMicroService;
+import tourGuide.proxy.TripDealMicroService;
 import tourGuide.model.Provider;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -25,7 +23,7 @@ public class TripDealServiceImpl implements TripDealService {
     private static final String TRIP_PRICER_API_KEY = "test-server-api-key";
 
 
-    public TripDealServiceImpl(TripDealMicroService tripDealMicroService, UserService userService, Mapper modelMapper) {
+    public TripDealServiceImpl(TripDealMicroService tripDealMicroService, UserService userService) {
         this.tripDealMicroService = tripDealMicroService;
         this.userService = userService;
     }

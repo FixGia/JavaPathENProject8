@@ -11,15 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tourGuide.Dto.AttractionRequest;
-import tourGuide.config.GpsMicroService;
-import tourGuide.config.RewardMicroService;
+import tourGuide.proxy.GpsMicroService;
+import tourGuide.proxy.RewardMicroService;
 import tourGuide.model.*;
 import tourGuide.service.Impl.RewardServiceImpl;
 import tourGuide.service.UserService;
 import tourGuide.util.DistanceCalculator;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 

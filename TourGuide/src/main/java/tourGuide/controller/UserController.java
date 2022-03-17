@@ -25,7 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping("/getUser")
+    @GetMapping("/getUser")
     public User getUser(@RequestParam String userName){
 
         log.info("##Controller /getUser ==> Request for user {} : ", userName);
@@ -33,7 +33,7 @@ public class UserController {
 
     }
 
-    @RequestMapping("getAllUsers")
+    @GetMapping("getAllUsers")
     public String getAllUsers(){
 
         return JsonStream.serialize(userService.getAllUsers());

@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+        classpath "io.swagger.core.v3:swagger-gradle-plugin:2.1.13"
     }
 }
 
@@ -47,15 +48,73 @@ repositories {
     }
 }
 
+
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation (name:'TripPricer', ext:'jar')
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation(name:'TripPricer', ext:'jar')
     implementation 'javax.mvc:javax.mvc-api:1.0-pr'
+
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.6.3')  {
+        exclude group: 'junit'
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+
+    testImplementation("org.junit.platform:junit-platform-launcher:1.2.0")
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-engine:5.3.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.3.1')
+
+    testCompileOnly 'junit:junit:4.13.2'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
 
+test {
+    useJUnitPlatform() {
+        includeEngines 'junit-jupiter'
+    }
+
+}
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+
+jacoco {
+    toolVersion = "0.8.4"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
+test.finalizedBy jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+        }
+    }
 }

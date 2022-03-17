@@ -2,16 +2,12 @@ package tourGuide.controller;
 
 
 import com.jsoniter.output.JsonStream;
-import feign.FeignException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tourGuide.config.GpsMicroService;
+import tourGuide.proxy.GpsMicroService;
 import tourGuide.model.Location;
-import tourGuide.model.User;
-import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.UserService;
 
@@ -31,7 +27,7 @@ public class LocationController {
         this.userService = userService;
     }
 
-    @RequestMapping("/getLocation")
+    @GetMapping("/getLocation")
     public String getLocation(@RequestParam @Valid String userName) {
 
 
@@ -40,7 +36,7 @@ public class LocationController {
     }
 
 
-    @RequestMapping("/getAllUsersLocation")
+    @GetMapping("/getAllUsersLocation")
     public String getAllUsersLocation(){
 
         Map<String, Location> allUsersLocation = locationService.getLastLocationForAllUsers();

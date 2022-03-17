@@ -1,7 +1,7 @@
 package tourGuide.controller;
 
 import com.jsoniter.output.JsonStream;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tourGuide.service.RewardService;
@@ -18,7 +18,7 @@ public class RewardController {
     }
 
 
-    @RequestMapping("/getRewards")
+    @GetMapping("/getRewards")
     public String getRewards(@RequestParam @NotNull final String userName) {
 
         return JsonStream.serialize(rewardService.getUserRewards(userName));

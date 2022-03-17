@@ -3,6 +3,7 @@ package com.project.rewardmicroservice.controller;
 
 import com.project.rewardmicroservice.service.RewardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,10 +22,9 @@ public class RewardController {
         this.rewardService = rewardService;
     }
 
-    @RequestMapping("/getRewardPoint/{attractionId}/{userId}")
+    @GetMapping("/getRewardPoint/{attractionId}/{userId}")
     public int getRewardPoints(@PathVariable final UUID attractionId, @PathVariable final UUID userId) throws ExecutionException, InterruptedException {
 
-        int rewardPoint = rewardService.getRewardPoints(attractionId, userId);
-        return rewardPoint;
+        return rewardService.getRewardPoints(attractionId, userId);
     }
 }

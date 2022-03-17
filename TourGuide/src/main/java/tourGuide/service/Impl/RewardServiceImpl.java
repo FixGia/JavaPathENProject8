@@ -3,8 +3,8 @@ package tourGuide.service.Impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tourGuide.Dto.AttractionRequest;
-import tourGuide.config.GpsMicroService;
-import tourGuide.config.RewardMicroService;
+import tourGuide.proxy.GpsMicroService;
+import tourGuide.proxy.RewardMicroService;
 import tourGuide.model.Attraction;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -13,7 +13,6 @@ import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
 import tourGuide.util.DistanceCalculator;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

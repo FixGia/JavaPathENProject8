@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 @Setter
 public class InternalTestHelper {
 
-    private static int internalUserNumber = 100;
+    private static int internalUserNumber = 10000;
     private static final String TRIP_PRICER_API_KEY = "test-server-api-key";
     private final Map<String, User> internalUserMap = new ConcurrentHashMap<>();
 

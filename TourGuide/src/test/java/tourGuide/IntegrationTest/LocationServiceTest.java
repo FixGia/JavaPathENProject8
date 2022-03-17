@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tourGuide.Dto.AttractionRecommendationRequest;
 import tourGuide.model.Location;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("IT - Service - LocationService")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@TestPropertySource("/Test-mode.properties")
 public class LocationServiceTest {
 
 

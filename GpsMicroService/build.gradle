@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        // Maven Central for resolving dependencies
         mavenCentral()
         flatDir {
             dirs 'libs'
@@ -8,6 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+        classpath "io.swagger.core.v3:swagger-gradle-plugin:2.1.13"
     }
 }
 
@@ -15,6 +15,7 @@ plugins {
     // Apply the java-library plugin for API and implementation separation
     id 'java-library'
     id 'maven-publish'
+    id "io.swagger.core.v3.swagger-gradle-plugin" version "2.1.13"
 }
 
 apply plugin: 'java'
@@ -24,6 +25,7 @@ apply plugin: 'war'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: "jacoco"
+apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 
 
 bootWar {
@@ -47,6 +49,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation(name:'gpsUtil', ext:'jar')
     implementation 'javax.mvc:javax.mvc-api:1.0-pr'
+
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

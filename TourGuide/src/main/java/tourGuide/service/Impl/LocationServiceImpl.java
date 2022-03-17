@@ -7,7 +7,7 @@ import tourGuide.Dto.AttractionRequest;
 import tourGuide.Dto.NearAttraction;
 
 import tourGuide.Dto.VisitedLocationRequest;
-import tourGuide.config.GpsMicroService;
+import tourGuide.proxy.GpsMicroService;
 import tourGuide.model.Location;
 import tourGuide.model.User;
 import tourGuide.model.VisitedLocation;
@@ -61,6 +61,8 @@ public class LocationServiceImpl implements LocationService {
 
     }
 
+
+
     public CompletableFuture<?> trackUserLocation(User user) {
 
         return CompletableFuture.supplyAsync(() -> {
@@ -68,10 +70,11 @@ public class LocationServiceImpl implements LocationService {
                             .getLocation(user.getUserId());
 
                     VisitedLocation visitedLocationToAdd = new VisitedLocation(visitedLocation.getUserId(),visitedLocation.getLocation(),visitedLocation.getTimeVisited());
-                    System.out.println("1");
                     user.addToVisitedLocations(visitedLocationToAdd);
+
                    CompletableFuture.runAsync(() -> {
                        rewardService.calculateRewardAsync(user);
+
                     });
 
                     return visitedLocation;

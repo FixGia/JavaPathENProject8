@@ -1,11 +1,10 @@
 package tourGuide.controller;
 
 import com.jsoniter.output.JsonStream;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tourGuide.Dto.ProviderRequest;
-import tourGuide.model.Provider;
 import tourGuide.service.TripDealService;
 
 import java.util.HashMap;
@@ -21,7 +20,7 @@ public class TripDealsController {
         this.tripDealService = tripDealService;
     }
 
-    @RequestMapping("/getTripDeals")
+    @GetMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
 
         List<ProviderRequest> providers = tripDealService.getTripDeals(userName);

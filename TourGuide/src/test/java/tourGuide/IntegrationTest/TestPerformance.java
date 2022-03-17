@@ -3,27 +3,23 @@ package tourGuide.IntegrationTest;
 import org.apache.commons.lang3.time.StopWatch;
 
 
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tourGuide.Dto.AttractionRequest;
-import tourGuide.config.GpsMicroService;
-import tourGuide.model.Attraction;
+import tourGuide.proxy.GpsMicroService;
 import tourGuide.model.User;
-import tourGuide.model.UserReward;
 import tourGuide.model.VisitedLocation;
 import tourGuide.service.LocationService;
 import tourGuide.service.RewardService;
 import tourGuide.service.UserService;
-import tourGuide.util.Initializer;
 import tourGuide.util.InternalTestHelper;
-import tourGuide.util.Tracker;
 
 import java.util.Date;
 import java.util.List;
@@ -34,7 +30,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -53,6 +48,11 @@ public class TestPerformance {
 	@Autowired
 	private UserService userService;
 
+
+	@BeforeEach
+	public void setUp(){
+
+	}
 	/*
 	 * A note on performance improvements:
 	 *
@@ -78,7 +78,6 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 
 		StopWatch stopWatch = new StopWatch();
-
 		stopWatch.start();
 
 		List<User> allUsers = userService.getAllUsers();
@@ -126,7 +125,7 @@ public class TestPerformance {
 
 		AttractionRequest attractionRequest = gpsMicroService.getAttractions().get(0);
 		List<User> allUsers = userService.getAllUsers();
-		System.out.println(allUsers.size());
+
 
 		allUsers.forEach(user -> {
 			user.clearVisitedLocations();
@@ -137,7 +136,8 @@ public class TestPerformance {
 				.map(u -> u
 						.getUserRewards().size())
 				.collect(Collectors.toList());
-		System.out.println(initialRewardCount.size());
+
+		stopWatch.start();
 
 		allUsers.forEach(user -> {
 			user.clearVisitedLocations();
@@ -146,7 +146,7 @@ public class TestPerformance {
 			user.addToVisitedLocations(visitedLocation);
 		});
 
-		stopWatch.start();
+
 
 		CompletableFuture<?>[] futures = allUsers.parallelStream()
 				.map(rewardService :: calculateRewardAsync)
@@ -175,9 +175,7 @@ public class TestPerformance {
 		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 
 
-
-
 	}
 
-	
+
 }
