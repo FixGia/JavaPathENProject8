@@ -17,8 +17,7 @@ TourGuide is composed of 4 microServices :
 # Basic Architecture
 ![ArchiBaseP8 drawio](https://user-images.githubusercontent.com/79265943/158581056-ff39b636-9c72-432a-81ed-f9538bb1ab9c.png)
 
-
-![ArchiTourGuide drawio](https://user-images.githubusercontent.com/79265943/158581100-23e4ad45-9ced-4643-9424-0d714f3da43f.png)
+![Architecture TourGuide Service](https://user-images.githubusercontent.com/79265943/158982813-c2bf0fbc-d896-4bde-874d-df141d21c1e9.png)
 
 
 ![ArchiGpsMS (1)](https://user-images.githubusercontent.com/79265943/158581116-5e9d3f50-eca0-46b4-aaff-8be486df92c7.png)
