@@ -1,3 +1,6 @@
+Branche mise à jour est la branche release_1.0
+
+
 ![TourGuidePré](https://user-images.githubusercontent.com/79265943/157535100-a1429eeb-c172-4cab-9df9-02ac3eb6d7d5.png)
 
 # Technology and Prerequisites
